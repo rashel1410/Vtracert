@@ -70,30 +70,21 @@ def parse_args():
     return args
 
 def tracerout_to_ip(address):
-    print '1'
+
     args = ["tracert", "-d", address]
-    print '2'
     proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
-    print '3'
+    print 'tracing'
     data = proc.communicate()[0]
-    print '4'
     lines = data.split('\r\n')
-    print '5'
     ip_list = []
-    print '6'
-    for line in lines:
-        print '7'
-        
+    for line in lines:        
         if line != "":
             if line[0]==' ': 
-                
                 ip = line[IP_BEG:]
                 ip = ip.strip(' ')
                 ip_list.append(ip)
             else:
                 print line
-    print '8'
-    print ip_list
     return ip_list    
     
 def create_xml(ip_list):
@@ -101,13 +92,11 @@ def create_xml(ip_list):
     root = et.Element('list')
     i=0
     for ip in ip_list:
-        title = et.SubElement(root, 'ipAddr')#,adrs=ip)
+        title = et.SubElement(root, 'ipAddr')
         i+=1
         title.text = ip
         print ip
-        print "root"
-    print et.tostring(root)
-    return et.tostring(root) #"<A><b>1</b></A>"
+    return et.tostring(root)
     
 def main():
     args = parse_args()
@@ -130,10 +119,6 @@ def main():
                     # Parse request line
                     #
                     req, rest = util.recv_line(s, rest)
-                    print "req:"
-                    print req
-                    print type(req)
-                    print "end req"
                     req_comps = req.split(' ', 2)
                     
                     if len(req_comps)==1:
@@ -168,15 +153,11 @@ def main():
                             uri[1:],
                         )
                     )
-                    print('HELLO')
-                    #print(uri)
                     
                     if uri[:11]=='/ip_or_dns?':
-                        print "hey2"
                         parse = urlparse.urlparse(uri)
                         ip_or_dns = parse.query
                         ip_list = tracerout_to_ip(ip_or_dns) 
-                        print ip_list
                         out = create_xml(ip_list)
                         print out
                         util.send_all(
@@ -218,15 +199,6 @@ def main():
                                 ).encode('utf-8')
                             )
                         util.send_all(s,out)                        
-                    # elif uri[:11]=='/tracerout?':
-                        # parse = urlparse.urlparse(uri)
-                        # param_temp = parse.query
-                        # print(parse)
-                        # param = urlparse.parse_qs(urlparse.urlparse(uri).query).values()
-                        # ip_or_dns=(param[0][0])
-                        # print ip_or_dns
-                        # print('>>>>>>>>>>>>>>>>>>>>>>>>\n inserted \n<<<<<<<<<<<<<<<<<<')
-                        
                     else:
                         with open(file_name,'rb') as f:
                             util.send_all(
@@ -265,8 +237,6 @@ def main():
                         #
                         # Send content
                         #
-
-                   # util.send_all(s,out)
 
                 except IOError as e:
                     traceback.print_exc()

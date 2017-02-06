@@ -29,6 +29,7 @@ function Onload(){
 }
 
 function draw_line(lat,lon,m){
+
     if (cur_lat == null){
         cur_lat = lat;
     }
@@ -36,12 +37,6 @@ function draw_line(lat,lon,m){
         cur_lon = lon;
     }
     L.marker([lat, lon]).addTo(m).openPopup();
-        
-    //var polygon = L.polygon([
-    //[51.509, -0.08],
-    //[51.503, -0.06],
-    //[51.51, -0.047]
-    //]).addTo(mymap);
     
     var polyline = L.polyline([[lat,lon], [cur_lat, cur_lon]],{color : ("#" + String(line_color))}).addTo(m);
     cur_lat = lat;
@@ -50,37 +45,29 @@ function draw_line(lat,lon,m){
 }
 
 function get_ips(xml){
+
     var xmlDoc = xml.responseXML;
-    ip_to_map = [];//[document.getElementById("ip_or_dns").value];
-    //alert("in func");
+    ip_to_map = [];
+
     for(var i=0; i<xmlDoc.getElementsByTagName("ipAddr").length; i++ ){
         ip_to_map.push(xmlDoc.getElementsByTagName("ipAddr")[i].childNodes[0].nodeValue);
-        
-        //ip_to_map.push(document.getElementsByTagName("ipAddr")[i].getAttribute("adrs"));
     }
-    //return ip_to_map;
 }
     
 
 function send_ip(){
+
     var xml = new XMLHttpRequest(),
     
         method = "GET",
         url = "ip_or_dns?",
         address = document.getElementById("ip_or_dns").value;
-        //alert(address);
 
     xml.open(method,url+address, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE && xml.status == 200) {
                 
-                //alert(xml.responseText);
-                
                 get_ips(xml);
-                
-                //alert("iplist:");
-                //alert(ip_to_map);
-                
                 request_coordinates();
                
             }
@@ -92,45 +79,29 @@ function send_ip(){
 }
 
 function request_coordinates() {
-    //alert("A")
+
     var xml = new XMLHttpRequest(),
         method = "GET",
         url = "http://ip-api.com/xml/",
         address = ip_to_map.shift();
         
-        
-    
-//for(var i=0; i<ip_list.length; i++){  
-
-    //alert('address');
-    //alert(address);        
-    
-    //var xml = new XMLHttpRequest()
-    //address=String(address);
     xml.open(method,url+address, true);
-    //alert("helloooo");
-
-    
     xml.onreadystatechange = function (){
-            //alert(xml.readyState);
-            //alert(xml.status);
+
             if(xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
-                //alert( "result555555555   "+xml.responseText);
                 myFunction(this);
 
             }
         };
-
     xml.send();
-    //address = String(ip_list[i]);
-//}
     return false;
 }
 
 function isSuccess(xml){
+
     var xmlDoc = xml.responseXML;
     xml_status = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
-    //alert(xml_status);
+
     if (xml_status==='success'){
         return true;
     }
@@ -138,7 +109,7 @@ function isSuccess(xml){
 }
 
 function myFunction(xml) {
-    
+   
     var xmlDoc = xml.responseXML;
     if ((xmlDoc != null) && isSuccess(xml)) {
         
@@ -171,7 +142,7 @@ Enter an ip address or dns:
 </p>
 <input  id="ip_or_dns"><br>
 <input type="submit" value="Submit" >
-hello
+
 
 </form>
 </body>
