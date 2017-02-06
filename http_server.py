@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/python
 
 import argparse
 import contextlib
@@ -23,28 +23,8 @@ MIME_MAPPING = {
     'txt': 'text/plain',
 }
 
-def send_status(s, code, message, extra):
-    util.send_all(
-        s,
-        (
-            (
-                '%s %s %s\r\n'
-                'Content-Type: text/plain\r\n'
-                '\r\n'
-                'Error %s %s\r\n'
-                '%s'
-            ) % (
-                constants.HTTP_SIGNATURE,
-                code,
-                message,
-                code,
-                message,
-                extra,
-            )
-        ).encode('utf-8')
-    )
 
-
+# parsing
 def parse_args():
     """Parse program argument."""
 
@@ -69,6 +49,32 @@ def parse_args():
     args.base = os.path.normpath(os.path.realpath(args.base))
     return args
 
+
+# used for errors
+def send_status(s, code, message, extra):
+
+    util.send_all(
+        s,
+        (
+            (
+                '%s %s %s\r\n'
+                'Content-Type: text/plain\r\n'
+                '\r\n'
+                'Error %s %s\r\n'
+                '%s'
+            ) % (
+                constants.HTTP_SIGNATURE,
+                code,
+                message,
+                code,
+                message,
+                extra,
+            )
+        ).encode('utf-8')
+    )
+
+
+# gets an address, tracerouts, returns list of ips
 def tracerout_to_ip(address):
 
     args = ["tracert", "-d", address]
@@ -77,30 +83,32 @@ def tracerout_to_ip(address):
     data = proc.communicate()[0]
     lines = data.split('\r\n')
     ip_list = []
-    for line in lines:        
+    for line in lines:
         if line != "":
-            if line[0]==' ': 
+            if line[0] == ' ':
                 ip = line[IP_BEG:]
                 ip = ip.strip(' ')
                 ip_list.append(ip)
             else:
                 print line
-    return ip_list    
-    
+    return ip_list
+
+
+# gets list - creates and returns an xml
 def create_xml(ip_list):
 
     root = et.Element('list')
-    i=0
     for ip in ip_list:
         title = et.SubElement(root, 'ipAddr')
-        i+=1
         title.text = ip
         print ip
     return et.tostring(root)
-    
+
+
 def main():
+
     args = parse_args()
-    print('start)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))0')
+    print 'start...'
     with contextlib.closing(
         socket.socket(
             family=socket.AF_INET,
@@ -120,10 +128,10 @@ def main():
                     #
                     req, rest = util.recv_line(s, rest)
                     req_comps = req.split(' ', 2)
-                    
-                    if len(req_comps)==1:
+
+                    if len(req_comps) == 1:
                         req_comps = req
-                    
+
                     else:
                         if req_comps[2] != constants.HTTP_SIGNATURE:
                             raise RuntimeError('Not HTTP protocol')
@@ -136,7 +144,6 @@ def main():
                             raise RuntimeError(
                                 "HTTP unsupported method '%s'" % method
                             )
-                            
                     #
                     # Create a file out of request uri.
                     # Be extra careful, it must not escape
@@ -153,11 +160,11 @@ def main():
                             uri[1:],
                         )
                     )
-                    
-                    if uri[:11]=='/ip_or_dns?':
+
+                    if uri[:11] == '/ip_or_dns?':
                         parse = urlparse.urlparse(uri)
                         ip_or_dns = parse.query
-                        ip_list = tracerout_to_ip(ip_or_dns) 
+                        ip_list = tracerout_to_ip(ip_or_dns)
                         out = create_xml(ip_list)
                         print out
                         util.send_all(
@@ -175,32 +182,30 @@ def main():
                                     )
                             ).encode('utf-8')
                         )
-                        util.send_all(s,out)
+                        util.send_all(s, out)
 
-                    elif uri[:6]=='/list?':
-                        print "hey3"
+                    elif uri[:6] == '/list?':
                         parse = urlparse.urlparse(uri)
                         ip_list = parse.query
                         print ip_list
-                        util.send_all(                                (
-
+                        util.send_all(
+                            (
                                 s,
-                                    (
-                                        '%s 200 OK\r\n'
-                                        'Content-Length: %s\r\n'
-                                        'Content-Type: %s\r\n'
-                                        '\r\n'
-                                    ) % (
+                                (
+                                    '%s 200 OK\r\n'
+                                    'Content-Length: %s\r\n'
+                                    'Content-Type: %s\r\n'
+                                    '\r\n'
+                                ) % (
                                         constants.HTTP_SIGNATURE,
                                         len(out),
                                         MIME_MAPPING.get('http'),
                                     )
-                                    
                                 ).encode('utf-8')
                             )
-                        util.send_all(s,out)                        
+                        util.send_all(s, out)
                     else:
-                        with open(file_name,'rb') as f:
+                        with open(file_name, 'rb') as f:
                             util.send_all(
                                 s,
                                 (
@@ -214,7 +219,7 @@ def main():
                                         # 'HTTP/1.1'
                                         # size of file
                                         # file type (.py , .html .....)=>
-                                        # => goes to MIME_MAPPING. otherwise - http
+                                        # => goes to MIME_MAPPING.
                                         #
                                         constants.HTTP_SIGNATURE,
                                         os.fstat(f.fileno()).st_size,
@@ -232,12 +237,10 @@ def main():
                                 buff = f.read(constants.BLOCK_SIZE)
                                 if not buff:
                                     break
-                                util.send_all(s,buff)
-
+                                util.send_all(s, buff)
                         #
                         # Send content
                         #
-
                 except IOError as e:
                     traceback.print_exc()
                     if not status_sent:
@@ -249,20 +252,20 @@ def main():
                     traceback.print_exc()
                     if not status_sent:
                         send_status(s, 500, 'Internal Error', e)
-    
 
 
 if __name__ == '__main__':
     main()
 
 #
-# locathost/tracerout -> calls examp.html -> 
-# input an address into html field -> python calls tracerout and creates a list of addresses->   
-# calls api site and creates a map with the coordinates -> 
-#    
-    
+# locathost/tracerout -> calls examp.html ->
+# input an address into html field ->
+# python calls tracerout and creates a list of addresses->
+# calls api site and creates a map with the coordinates ->
+#
+
 # cd C:\Users\Raya\Documents\Rashel-\network-course-master
 # Python -m http.server --bind-port 8080
 # vim: expandtab tabstop=4 shiftwidth=4
 
-#   172.16.255.254
+# 172.16.255.254
