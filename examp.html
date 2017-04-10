@@ -26,11 +26,9 @@ function Onload(){
 			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 		id: 'mapbox.streets'
 	}).addTo(mymap);
-    alert('map');
 } 
 
 function draw_line(lat,lon,m){
-    alert('line')
 
     if (cur_lat == null){
         cur_lat = lat;
@@ -39,7 +37,6 @@ function draw_line(lat,lon,m){
         cur_lon = lon;
     }
     L.marker([lat, lon]).addTo(m).openPopup();
-    
     var polyline = L.polyline([[lat,lon], [cur_lat, cur_lon]],{color : ("#" + String(line_color))}).addTo(m);
     cur_lat = lat;
     cur_lon = lon;
@@ -55,7 +52,7 @@ function get_ips(xml){
         ip_to_map.push(xmlDoc.getElementsByTagName("ipAddr")[i].childNodes[0].nodeValue);
     }
 }
-    
+
 
 function send_ip(){
 

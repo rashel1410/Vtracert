@@ -14,6 +14,7 @@ import xml.etree.ElementTree as et
 
 from common import constants
 from common import util
+from my_tracert import my_tracerout
 
 IP_BEG = 32
 MIME_MAPPING = {
@@ -93,6 +94,7 @@ def tracerout_to_ip(address):
             else:
                 print line
     print 6666666666666666666666
+    print type(ip_list[0])
     print ip_list
     return ip_list
 
@@ -167,7 +169,8 @@ def main():
                     if uri[:11] == '/ip_or_dns?':
                         parse = urlparse.urlparse(uri)
                         ip_or_dns = parse.query
-                        ip_list = tracerout_to_ip(ip_or_dns)
+                        print type(ip_or_dns)
+                        ip_list = my_tracerout(ip_or_dns)#tracerout_to_ip(ip_or_dns)
                         out = create_xml(ip_list)
                         print out
                         util.send_all(
