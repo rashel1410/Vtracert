@@ -37,6 +37,7 @@ def binary_list(s):
 # while flag==false and max<50:
 # flag is true if correct reply in reply.py and max is the maximum hops number
 def main():
+
     TTL = 1
     MAX = 50
     CUR = 0
