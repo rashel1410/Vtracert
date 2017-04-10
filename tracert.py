@@ -168,13 +168,17 @@ def main():
         new_hops = []
         for h in hops:
             dec_hop = ''
+            last = ''
             index = 0
             for i in range(len(h)/2):
                 print h[index:index+2]
                 dec_hop += str(int((h[index:index+2]), 16)) 
                 dec_hop += '.'
                 index += 2
-            new_hops.append(dec_hop)
+            dec_hop = dec_hop[:-1]
+            if new_hops != last:
+                new_hops.append(dec_hop)
+                last = dec_hop
         print new_hops
 #   CHECK WHY CHANGING THE DATA CAUSING PROBLEMS - EXCEEDED IS FINE BUT DOESNT GETTING A REPLY
 #   SEND NEW_HOPS TO SERVER OR JAVASCRIPT AND USE IN MAP

@@ -88,9 +88,12 @@ def tracerout_to_ip(address):
             if line[0] == ' ':
                 ip = line[IP_BEG:]
                 ip = ip.strip(' ')
-                ip_list.append(ip)
+                if ip != 'Request timed out.':
+                    ip_list.append(ip)
             else:
                 print line
+    print 6666666666666666666666
+    print ip_list
     return ip_list
 
 
