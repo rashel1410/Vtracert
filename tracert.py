@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
+import random
 import re
 import reply
 import sys
 import gcap
 import base64
 
-from checksum import ip_checksum
+from checksum import calc_checksum
 
 TTL = 1
+DATA_LEN = 64
 
 def hexstring_to_binary(h, sep=''):
     return bytearray(int(x, 16) for x in re.findall('..', h.replace(sep, '')))
@@ -19,17 +21,21 @@ def int_to_binary(i, n):
         l.append(i & 0xff)
         i >>= 8
     return bytearray(l[::-1])
-
-def to_bin(str):
-    binS = bin(int(str,16))
-    num = 0
     
 def binary_to_hexstring(h, sep=''):
     return sep.join('%02x' % x for x in bytearray(h))
     
+def binary_list(s):
+    out = []
+    index = 0
+    for l in range(len(s)/2):
+        out.append(hexstring_to_binary( s[2*l] + s[(2*l)+1]))
+        index += 2
+    return out
+    
 # flag = false
 # while flag==false and max<50:
-# flaf is true if correct reply in reply.py and max is the maximum hops number
+# flag is true if correct reply in reply.py and max is the maximum hops number
 def main():
     TTL = 1
     MAX = 50
@@ -39,21 +45,26 @@ def main():
         iface = sys.argv[1]
     else:
         iface = gcap.GCap.get_interfaces()[0]['name']
-    #print iface
+
     with gcap.GCap(iface=iface) as cap:
         mac_dst = 'e8fcaf89a0e8' #'906cac8859af'
         mac_src = '881fa100cd54'
         ip_src = '0a00000a' #'ac1001e0'
         type = 0x1000
-        #send = '1056ca0b1e74881fa100cd5408004500003c3db1000002019f5fac100591ac10fffe08004d32000100296162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
-        content = '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869' #base64.b16encode('RASHEL 1') # '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
-#        content += '000000000000000000000000000000000000000000000000'
-        
         hops = []
         corr = False
+
         while not corr and CUR<MAX:
+            rand = random.randint(0,100)
+            content = base64.b16encode('TRACE'+str(rand) ) # '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
+            if len(content) < DATA_LEN:
+                zeros = DATA_LEN - len(content)
+                while zeros != 0:
+                    content += '0'
+                    zeros -= 1
+                    
             packet = {
-                      'dst': 'e8fcaf89a0e8', #'906cac8859af' ,
+                      'dst': mac_dst, #'906cac8859af' ,
                       'src': mac_src, #'881fa100cd54',
                       'type':'0800',
                       'payload':{
@@ -70,7 +81,7 @@ def main():
                            'payload':{
                                 'Type':'08',
                                 'Code':'00',
-                                'Checksum':'4d32',
+                                'Checksum':'',
                                 'Identifier':'0001',
                                 'Sequence num':'0029',
                                 'Data': content
@@ -78,7 +89,7 @@ def main():
                        }
             }
             
-            Z = [
+            ip_headers = [
                 packet['payload']['Header Length'],
                 packet['payload']['Diff Services Field'],
                 packet['payload']['Total Length'],
@@ -89,29 +100,40 @@ def main():
                 packet['payload']['src'],
                 packet['payload']['dst']
             ]
+            
             out=''
-            for p in Z:
+            for p in ip_headers:
                 out += p
-            print out
-            List=[]
-            index=0
-            for l in range(len(out)/2):
-                List.append(hexstring_to_binary(out[2*l] + out[(2*l)+1]))
-                index += 2
-            #print List
-            
-           # for g in Y:
-            #    print g
-                
-            
-            chsum = ip_checksum(List, len(List))
+            bin_list = binary_list(out)
+            # ip checksum calculation
+            ip_chsum = calc_checksum(bin_list, len(bin_list))
             print 'new chsum'
-            hex_chsum = "%04x" %chsum
-            #print chsum
-            packet['payload']['Header checksum'] = hex_chsum
+            hex_ip_chsum = "%04x" %ip_chsum
+            packet['payload']['Header checksum'] = hex_ip_chsum
             print packet['payload']['Header checksum']
+            
+            data_headers = [
+                packet['payload']['payload']['Type'],
+                packet['payload']['payload']['Code'],
+                packet['payload']['payload']['Identifier'],
+                packet['payload']['payload']['Sequence num'],
+                packet['payload']['payload']['Data']
+            ]
+            
+            out=''
+            for p in data_headers:
+                out += p
+            bin_list = binary_list(out)
+            
+            # data checksum calculation
+            data_chsum = calc_checksum(bin_list, len(bin_list))
+            hex_data_chsum = "%04x" %data_chsum
+            packet['payload']['payload']['Checksum'] = hex_data_chsum
+            print packet['payload']['payload']['Checksum']
+            
+            
             # building the packet
-            X = [
+            done_pack = [
                 packet['dst'],
                 packet['src'],
                 packet['type'],
@@ -133,9 +155,8 @@ def main():
                 packet['payload']['payload']['Data']
             ]
 
-            
             new_pack = ''
-            for item in X:
+            for item in done_pack:
                 new_pack += item
             TTL += 1
             #replyPack = cap.next_packet()
