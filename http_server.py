@@ -107,6 +107,7 @@ def create_xml(ip_list):
         title = et.SubElement(root, 'ipAddr')
         title.text = ip
         print ip
+    print et.tostring(root)
     return et.tostring(root)
 
 

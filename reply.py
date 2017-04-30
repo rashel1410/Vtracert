@@ -74,9 +74,15 @@ def exceeded_reply(packet, cap, my_ip, my_mac, content):
     ))
     print data
     
-    if (my_mac == mac_dst):
+    print "my mac:"+my_mac
+    print "mac_dst:"+mac_dst
+    if (my_mac.upper() == mac_dst.upper()):
+        print '>>>>>>>>>>>>>>>>>>>>>>>>'
         if (type =='0b'):
+            print "my ip:"+my_ip
+            print "ip dst:"+ip_dst
             if (my_ip == ip_dst):
+                print 'PPPPPPPPPPPPP'
                 #if data == content:
                 print "*************************GOOD JOB****************************"
                 return True
@@ -118,8 +124,9 @@ def correct_reply(packet, cap, my_ip, my_mac, content):
         packet['data'][42:],
     ))
 #    print data
-    
-    if (my_mac == mac_dst):
+    print "my mac 2 :"+my_mac
+    print "mac_dst 2 :"+mac_dst
+    if (my_mac.upper() == mac_dst.upper()):
         if (type =='00'):
             if (my_ip == ip_dst):
                 #if icmp_type == '00':
