@@ -168,28 +168,31 @@ def main():
                     )
 
                     if uri[:11] == '/ip_or_dns?':
-                        parse = urlparse.urlparse(uri)
-                        ip_or_dns = parse.query
-                        print type(ip_or_dns)
-                        ip_list = my_tracerout(ip_or_dns)#tracerout_to_ip(ip_or_dns)
-                        out = create_xml(ip_list)
-                        print out
-                        util.send_all(
-                            s,
-                            (
-                                    (
-                                        '%s 200 OK\r\n'
-                                        'Content-Length: %s\r\n'
-                                        'Content-Type: %s\r\n'
-                                        '\r\n'
-                                    ) % (
-                                        constants.HTTP_SIGNATURE,
-                                        len(out),
-                                        MIME_MAPPING.get('xml'),
-                                    )
-                            ).encode('utf-8')
-                        )
-                        util.send_all(s, out)
+                        hop,c,ttl = my_tracerout(ip_or_dns)
+                        while hop != '':
+                            parse = urlparse.urlparse(uri)
+                            ip_or_dns = parse.query
+                            #print type(ip_or_dns)
+                            #tracerout_to_ip(ip_or_dns)
+                            out = create_xml(ip_list)
+                            print out
+                            util.send_all(
+                                s,
+                                (
+                                        (
+                                            '%s 200 OK\r\n'
+                                            'Content-Length: %s\r\n'
+                                            'Content-Type: %s\r\n'
+                                            '\r\n'
+                                        ) % (
+                                            constants.HTTP_SIGNATURE,
+                                            len(out),
+                                            MIME_MAPPING.get('xml'),
+                                        )
+                                ).encode('utf-8')
+                            )
+                            util.send_all(s, out)
+                            hop,c,ttl = my_tracerout(ip_or_dns)
 
                     elif uri[:6] == '/list?':
                         parse = urlparse.urlparse(uri)

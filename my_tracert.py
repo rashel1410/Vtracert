@@ -8,11 +8,12 @@ import reply
 import sys
 import gcap
 import base64
+import time
+
+
 
 from checksum import calc_checksum
 
-TTL = 1
-DATA_LEN = 64
 
 def hexstring_to_binary(h, sep=''):
     return bytearray(int(x, 16) for x in re.findall('..', h.replace(sep, '')))
@@ -35,208 +36,232 @@ def binary_list(s):
         index += 2
     return out
     
+def reply_timeout(T):
+    target_time = T + TIME
+    
+def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
+
+    
+    #TTL = 40
+    DATA_LEN = 64
+    #MAX = 30
+    #TIME = 7
+    #CUR = 0
+
+    hops = []
+    corr = False
+    content = base64.b16encode('TRACE'+str(seq_num) ) # '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
+    if len(content) < DATA_LEN:
+        zeros = DATA_LEN - len(content)
+        while zeros != 0:
+            content += '0'
+            zeros -= 1
+    
+    print 'SEQ: '+str(seq_num)
+    packet = {
+              'dst': mac_dst,
+              'src': mac_src, #'881fa100cd54',
+              'type':'0800',
+              'payload':{
+                   'Header Length':'45',
+                   'Diff Services Field':'00',
+                   'Total Length':'003c',
+                   'Identification':'3db1',
+                   'Fragment offset':'0000',
+                   'TTL': "%02x" %ttl,
+                   'Protocol':'01',
+                   'Header checksum':'',
+                   'src': ip_src,#'0a000008', #'ac1001e0',
+                   'dst': ip_dst,
+                   'payload':{
+                        'Type':'08',
+                        'Code':'00',
+                        'Checksum':'',
+                        'Identifier':id,
+                        'Sequence num':'%04x' %seq_num,
+                        'Data': content
+                    }
+               }
+    }
+    
+    ip_headers = [
+        packet['payload']['Header Length'],
+        packet['payload']['Diff Services Field'],
+        packet['payload']['Total Length'],
+        packet['payload']['Identification'],
+        packet['payload']['Fragment offset'],
+        packet['payload']['TTL'],
+        packet['payload']['Protocol'],
+        packet['payload']['src'],
+        packet['payload']['dst']
+    ]
+    
+    out=''
+    for p in ip_headers:
+        out += p
+    bin_list = binary_list(out)
+    # ip checksum calculation
+    ip_chsum = calc_checksum(bin_list, len(bin_list))
+    #print 'new chsum'
+    hex_ip_chsum = "%04x" %ip_chsum
+    packet['payload']['Header checksum'] = hex_ip_chsum
+    #print packet['payload']['Header checksum']
+    
+    data_headers = [
+        packet['payload']['payload']['Type'],
+        packet['payload']['payload']['Code'],
+        packet['payload']['payload']['Identifier'],
+        packet['payload']['payload']['Sequence num'],
+        packet['payload']['payload']['Data']
+    ]
+    
+    out=''
+    for p in data_headers:
+        out += p
+    bin_list = binary_list(out)
+    
+    # data checksum calculation
+    data_chsum = calc_checksum(bin_list, len(bin_list))
+    hex_data_chsum = "%04x" %data_chsum
+    packet['payload']['payload']['Checksum'] = hex_data_chsum
+    #print packet['payload']['payload']['Checksum']
+    
+    
+    # building the packet
+    done_pack = [
+        packet['dst'],
+        packet['src'],
+        packet['type'],
+        packet['payload']['Header Length'],
+        packet['payload']['Diff Services Field'],
+        packet['payload']['Total Length'],
+        packet['payload']['Identification'],
+        packet['payload']['Fragment offset'],
+        packet['payload']['TTL'],
+        packet['payload']['Protocol'],
+        packet['payload']['Header checksum'],
+        packet['payload']['src'],
+        packet['payload']['dst'],
+        packet['payload']['payload']['Type'],
+        packet['payload']['payload']['Code'],
+        packet['payload']['payload']['Checksum'],
+        packet['payload']['payload']['Identifier'],
+        packet['payload']['payload']['Sequence num'],
+        packet['payload']['payload']['Data']
+    ]
+
+    new_pack = ''
+    for item in done_pack:
+        new_pack += item
+    
+    return new_pack,content
+    
+def send_my_packet(new_pack,cap):
+
+    tosend = base64.b16decode(new_pack,True)
+    cap.send_packet(tosend)
+    
+    
 # flag = false
 # while flag==false and max<50:
 # flag is true if correct reply in reply.py and max is the maximum hops number
-def main():#my_tracerout(arg):
+def recieve_packet(repack):
 
-    TTL = 1
-    MAX = 40
-    CUR = 0
-    
+    corr = False
+#           hop = ''
+    exceeded = False
+    timeout = False
+    #target_time = time.clock() + TIME
+    while not exceeded and not corr and not timeout:
+        hop = reply.function(repack,cap, ip_src, mac_src, content)
+        if hop != '': #if exceeded
+            #hops.append(hop)
+            exceeded = True
+            #exceeded = reply.exceeded_reply(repack, cap, ip_src, mac_src, content)
+        corr = reply.correct_reply(repack, cap, ip_src, mac_src, content)
+        print '------------------------------------------------------'
+    if target_time<=time.clock():
+        timeout = True
+    if timeout:
+        print 'SEND AGAIN'
+            
+            
+    #CUR += 1
+    if corr:
+        print 'corr'
+    return hop
+
+#def main():
+def my_tracert(dest,ttl,max_time):
+#CONTET??????????
+   # dest = 'www.msn.com'
+    #ttl = 1
+    #max_time = 10
+    ID = '0001'
     if len(sys.argv) > 1:
         iface = sys.argv[1]
     else:
         iface = gcap.GCap.get_interfaces()[0]['name']
 
-    with gcap.GCap(iface=iface) as cap:
+    with gcap.GCap(iface=iface, timeout=2000) as cap:
+
+        if '.' in dest:
+            ip_dst = addresses.address_ip(dest)#'08080808'
+        else:
+            ip_dst = dest
+        
+        seq_num = random.randint(0,100)
+        ip_src = addresses.my_ip()#'0a000008' #'ac1001e0'
         mac_dst = ipconfigMac.dst_mac()#'e8fcaf89a0e8' #'906cac8859af'
         mac_src = ipconfigMac.src_mac()#'881fa100cd54'
-        ip_src = addresses.my_ip()#'0a000008' #'ac1001e0'
-        type_ = 0x1000
-        hops = []
-        corr = False
-        #if ip address
-        # ip_dst_list = arg.split('.')
-        # ip_dst= ''
-        # print arg
-       # # print arg.encode('utf8')
-        # print ip_dst_list
-        # for part in ip_dst_list:
-            # ip_dst += '%02x' %int(part.encode())
-        # print ip_dst
-        arg = '8.8.8.8'
-        ip_dst = addresses.address_ip(arg)#'08080808'
+        #IP_TYPE = 0x1000
+        #print "YYYYYYYYYYYYYYYYYYYYY  "+ip_src
+        rand = random.randint(0,100)
+        retries = 3
+        status = 'NONE'
+        #target_time = 0
+        #seq_change = False
+        target_time = 0
         
-        print mac_dst
-        print mac_src
-        print ip_dst
-        print ip_src
         
-        ### what if arg is www.ynet.co.il and not ip ????????? what if packets don't come each after other but : request request reply reply
-
-        while not corr and CUR<MAX:
-            rand = random.randint(0,100)
-            content = base64.b16encode('TRACE'+str(rand) ) # '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
-            if len(content) < DATA_LEN:
-                zeros = DATA_LEN - len(content)
-                while zeros != 0:
-                    content += '0'
-                    zeros -= 1
-                    
-            packet = {
-                      'dst': mac_dst, # 
-                      'src': mac_src, #'881fa100cd54',
-                      'type':'0800',
-                      'payload':{
-                           'Header Length':'45',
-                           'Diff Services Field':'00',
-                           'Total Length':'003c',
-                           'Identification':'3db1',
-                           'Fragment offset':'0000',
-                           'TTL': "%02x" %TTL,
-                           'Protocol':'01',
-                           'Header checksum':'',
-                           'src': ip_src,#'0a000008', #'ac1001e0',
-                           'dst': ip_dst,
-                           'payload':{
-                                'Type':'08',
-                                'Code':'00',
-                                'Checksum':'',
-                                'Identifier':'0001',
-                                'Sequence num':'%04x' %rand,
-                                'Data': content
-                            }
-                       }
-            }
-            
-            ip_headers = [
-                packet['payload']['Header Length'],
-                packet['payload']['Diff Services Field'],
-                packet['payload']['Total Length'],
-                packet['payload']['Identification'],
-                packet['payload']['Fragment offset'],
-                packet['payload']['TTL'],
-                packet['payload']['Protocol'],
-                packet['payload']['src'],
-                packet['payload']['dst']
-            ]
-            
-            out=''
-            for p in ip_headers:
-                out += p
-            bin_list = binary_list(out)
-            # ip checksum calculation
-            ip_chsum = calc_checksum(bin_list, len(bin_list))
-            #print 'new chsum'
-            hex_ip_chsum = "%04x" %ip_chsum
-            packet['payload']['Header checksum'] = hex_ip_chsum
-            #print packet['payload']['Header checksum']
-            
-            data_headers = [
-                packet['payload']['payload']['Type'],
-                packet['payload']['payload']['Code'],
-                packet['payload']['payload']['Identifier'],
-                packet['payload']['payload']['Sequence num'],
-                packet['payload']['payload']['Data']
-            ]
-            
-            out=''
-            for p in data_headers:
-                out += p
-            bin_list = binary_list(out)
-            
-            # data checksum calculation
-            data_chsum = calc_checksum(bin_list, len(bin_list))
-            hex_data_chsum = "%02x" %data_chsum
-            packet['payload']['payload']['Checksum'] = hex_data_chsum
-            #print packet['payload']['payload']['Checksum']
-            
-            
-            # building the packet
-            done_pack = [
-                packet['dst'],
-                packet['src'],
-                packet['type'],
-                packet['payload']['Header Length'],
-                packet['payload']['Diff Services Field'],
-                packet['payload']['Total Length'],
-                packet['payload']['Identification'],
-                packet['payload']['Fragment offset'],
-                packet['payload']['TTL'],
-                packet['payload']['Protocol'],
-                packet['payload']['Header checksum'],
-                packet['payload']['src'],
-                packet['payload']['dst'],
-                packet['payload']['payload']['Type'],
-                packet['payload']['payload']['Code'],
-                packet['payload']['payload']['Checksum'],
-                packet['payload']['payload']['Identifier'],
-                packet['payload']['payload']['Sequence num'],
-                packet['payload']['payload']['Data']
-            ]
-
-            new_pack = ''
-            for item in done_pack:
-                new_pack += item
-            TTL += 1
-
-            # increasing TTL
-            #ttl = int(packet['payload']['TTL'], 16) + 1
-            #packet['payload']['TTL'] = hex(ttl)[-2:]
-            #
-            
-            
-    #        hops = []
-            #print new_pack
-            tosend = base64.b16decode(new_pack,True)
-            cap.send_packet(tosend)
-    #        corr = False
-    #        while not corr:
+        """
+        while True:
             repack = cap.next_packet()
             if repack:
-                hop = reply.function(repack,cap, ip_src, mac_src, content)
-                if hop != '': #if exceeded
-                    hops.append(hop)
-                corr = reply.correct_reply(repack, cap, ip_src, mac_src, content)
-                    #print repack
-            CUR += 1
-        hops.append(ip_dst)
-        print hops
-        
-        new_hops = []
-        for h in hops:
-            dec_hop = ''
-            last = ''
-            index = 0
-            for i in range(len(h)/2):
-                print h[index:index+2]
-                dec_hop += str(int((h[index:index+2]), 16)) 
-                dec_hop += '.'
-                index += 2
-            dec_hop = dec_hop[:-1]
-            if new_hops != last:
-                new_hops.append(dec_hop)
-                last = dec_hop
-        print new_hops
-        return new_hops
-#   CHECK WHY CHANGING THE DATA CAUSING PROBLEMS - EXCEEDED IS FINE BUT DOESNT GETTING A REPLY
-#   SEND NEW_HOPS TO SERVER OR JAVASCRIPT AND USE IN MAP
-#   WHY CONSTANS DON'T WORK WELL
-        
-        
-        
-            #hexstring_to_binary(dst, sep=':') +
-            #hexstring_to_binary(src, sep=':') +
-            #int_to_binary(type, 2) +
-            #'abcdefghijklmopqrstuvwabcdefghi'.encode('ascii')
-        
-#906cac8859af881fa100cd5408004500004d24434000800673aeac1006a9ae81017fe0421acdd873
-#fe37decea8455018010163fb0000ca1c2cb079f5ada942b5bdc5911886eec5e2bb80e5a5b8fec28b
-#aa6f407447aeedfef20d63
+                print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
+        """
+        hop = None
+        while status == 'NONE' and retries>0:
+            if target_time<=time.clock():
+                seq_num += 1
+                new_pack,content = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap)
+                #content?!
+                retries -= 1
+                sys.stderr.write(str(retries)+'\n')
+                target_time = time.clock() + max_time
+                print 'TIME: '+str(time.clock())
+                send_my_packet(new_pack,cap)
+                #seq_change = True
+            #else:
 
-if __name__ == '__main__':
-    main()
+         
+            sys.stderr.write("+")
+            repack = cap.next_packet()
+            #print ':::::::::::::::::::::::::::::::::::'
+            #repack = None
+            sys.stderr.write(".")
+            if repack:
+                print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
+                status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
+
+        return status, hop
+
+
+#if __name__ == '__main__':
+#    main()
+    
+######## XML,HTTP SERVER, GIS, ETHERNET
+    
     
 # dst - mine
 # ttl - expired / type11?
