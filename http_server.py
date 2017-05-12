@@ -7,6 +7,7 @@ import errno
 import os
 import socket
 import subprocess
+import sys
 import traceback
 import urlparse
 import xml
@@ -14,9 +15,12 @@ import xml.etree.ElementTree as et
 
 from common import constants
 from common import util
-from my_tracert import my_tracerout
-
+from my_tracert import my_tracert
+TTL = 1
+MAX_HOPS = 30
+RETRIES = 3
 IP_BEG = 32
+CUR_HOPS = 0
 MIME_MAPPING = {
     'xml': 'text/xml',
     'html': 'text/html',
@@ -100,13 +104,12 @@ def tracerout_to_ip(address):
 
 
 # gets list - creates and returns an xml
-def create_xml(ip_list):
+def create_xml(ip):
 
     root = et.Element('list')
-    for ip in ip_list:
-        title = et.SubElement(root, 'ipAddr')
-        title.text = ip
-        print ip
+    title = et.SubElement(root, 'ipAddr')
+    title.text = ip
+    print ip
     print et.tostring(root)
     return et.tostring(root)
 
@@ -168,14 +171,37 @@ def main():
                     )
 
                     if uri[:11] == '/ip_or_dns?':
-                        hop,c,ttl = my_tracerout(ip_or_dns)
-                        while hop != '':
-                            parse = urlparse.urlparse(uri)
-                            ip_or_dns = parse.query
+                        #status,hop = my_tracerout(ip_or_dns)
+                        parse = urlparse.urlparse(uri)
+                        ip_or_dns = parse.query
+                        MAX_TIME = 5
+                        TTL = 1
+                        MAX_HOPS = 30
+                        RETRIES = 3
+                        IP_BEG = 32
+                        CUR_HOPS = 0
+                        hop = ''
+                        status = 'NONE'
+                        while status!='REACH' and CUR_HOPS < MAX_HOPS:
+                            status,hop = my_tracert(ip_or_dns,TTL,MAX_TIME)
+                            sys.stderr.write( "TTL "+str(TTL)+'\n')
+                            sys.stderr.write( status+'\n')
+                            ip = ''
+                            index = 0
+                            part = ''
+                            for i in range(len(hop)/2):
+                                part = hop[index:index+2]
+                                ip += str(int(part,16))+'.'
+                                index += 2
+                            ip = ip[:-1]
+                            sys.stderr.write(ip+'\n\n')
+                            TTL += 1
+                            CUR_HOPS += 1
+                            print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
                             #print type(ip_or_dns)
                             #tracerout_to_ip(ip_or_dns)
-                            out = create_xml(ip_list)
-                            print out
+                            out = create_xml(ip)
+                            #print out
                             util.send_all(
                                 s,
                                 (
@@ -192,28 +218,27 @@ def main():
                                 ).encode('utf-8')
                             )
                             util.send_all(s, out)
-                            hop,c,ttl = my_tracerout(ip_or_dns)
 
-                    elif uri[:6] == '/list?':
-                        parse = urlparse.urlparse(uri)
-                        ip_list = parse.query
-                        print ip_list
-                        util.send_all(
-                            (
-                                s,
-                                (
-                                    '%s 200 OK\r\n'
-                                    'Content-Length: %s\r\n'
-                                    'Content-Type: %s\r\n'
-                                    '\r\n'
-                                ) % (
-                                        constants.HTTP_SIGNATURE,
-                                        len(out),
-                                        MIME_MAPPING.get('http'),
-                                    )
-                                ).encode('utf-8')
-                            )
-                        util.send_all(s, out)
+                    # elif uri[:6] == '/list?':
+                        # parse = urlparse.urlparse(uri)
+                        # ip_list = parse.query
+                        # print ip_list
+                        # util.send_all(
+                            # (
+                                # s,
+                                # (
+                                    # '%s 200 OK\r\n'
+                                    # 'Content-Length: %s\r\n'
+                                    # 'Content-Type: %s\r\n'
+                                    # '\r\n'
+                                # ) % (
+                                        # constants.HTTP_SIGNATURE,
+                                        # len(out),
+                                        # MIME_MAPPING.get('http'),
+                                    # )
+                                # ).encode('utf-8')
+                            # )
+                        # util.send_all(s, out)
                     else:
                         with open(file_name, 'rb') as f:
                             util.send_all(
