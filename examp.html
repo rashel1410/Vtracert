@@ -83,20 +83,25 @@ function request_coordinates() {
     xml.open(method,url+address, true);
     alert('alert');
     xml.onreadystatechange = function (){
+            //alert(xml.readyState);
+            //alert('heyy');
+            //alert(xml.status);
             if(xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
-                alert(8);
+                alert(0);
                 myFunction(this);
 
             }
         };
+    alert('alert222222');
     xml.send();
-    return true;
+    return false;
 }
 
 function isSuccess(xml){
 
     var xmlDoc = xml.responseXML;
     xml_status = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
+    alert(xml_status);
     if (xml_status==='success'){
         return true;
     }
@@ -106,19 +111,23 @@ function isSuccess(xml){
 function myFunction(xml) {
     alert(8);
     var xmlDoc = xml.responseXML;
+    alert(xmlDoc);
+    alert(isSuccess(xml));
     if ((xmlDoc != null) && isSuccess(xml)) {
-        
-        lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
-        lon = xmlDoc.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
-        document.getElementById("demo").innerHTML = lat;
-        document.getElementById("demo2").innerHTML = lon;
-        draw_line(lat,lon,mymap);
-        alert('o');
+        if (ip_to_map != ''){
+            lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
+            lon = xmlDoc.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
+            document.getElementById("demo").innerHTML = lat;
+            document.getElementById("demo2").innerHTML = lon;
+            draw_line(lat,lon,mymap);
+            alert('o');
+        }
 
     }
-    if (ip_to_map != ''){
+    if (ip_to_map == ''){
         request_coordinates();
         alert(45);
+
     }
 }
 

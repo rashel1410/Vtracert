@@ -183,6 +183,16 @@ def main():
                         hop = ''
                         status = 'NONE'
                         while status!='REACH' and CUR_HOPS < MAX_HOPS:
+                            util.send_all(
+                                s,
+                                (
+                                        (
+                                            '%s 200 OK\r\n'
+                                        ) % (
+                                            constants.HTTP_SIGNATURE,
+                                        )
+                                ).encode('utf-8')
+                            )
                             status,hop = my_tracert(ip_or_dns,TTL,MAX_TIME)
                             sys.stderr.write( "TTL "+str(TTL)+'\n')
                             sys.stderr.write( status+'\n')
@@ -206,12 +216,10 @@ def main():
                                 s,
                                 (
                                         (
-                                            '%s 200 OK\r\n'
                                             'Content-Length: %s\r\n'
                                             'Content-Type: %s\r\n'
                                             '\r\n'
                                         ) % (
-                                            constants.HTTP_SIGNATURE,
                                             len(out),
                                             MIME_MAPPING.get('xml'),
                                         )
