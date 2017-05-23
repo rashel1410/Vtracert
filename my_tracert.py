@@ -186,17 +186,12 @@ def recieve_packet(repack):
         print 'SEND AGAIN'
             
             
-    #CUR += 1
     if corr:
         print 'corr'
     return hop
 
-#def main():
 def my_tracert(dest,ttl,max_time):
-#CONTET??????????
-   # dest = 'www.msn.com'
-    #ttl = 1
-    #max_time = 10
+
     ID = '0001'
     if len(sys.argv) > 1:
         iface = sys.argv[1]
@@ -214,15 +209,10 @@ def my_tracert(dest,ttl,max_time):
         ip_src = addresses.my_ip()#'0a000008' #'ac1001e0'
         mac_dst = ipconfigMac.dst_mac()#'e8fcaf89a0e8' #'906cac8859af'
         mac_src = ipconfigMac.src_mac()#'881fa100cd54'
-        #IP_TYPE = 0x1000
-        #print "YYYYYYYYYYYYYYYYYYYYY  "+ip_src
         rand = random.randint(0,100)
         retries = 3
         status = 'NONE'
-        #target_time = 0
-        #seq_change = False
         target_time = 0
-        
         
         """
         while True:
@@ -230,7 +220,7 @@ def my_tracert(dest,ttl,max_time):
             if repack:
                 print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
         """
-        hop = None
+        hop = ''
         while status == 'NONE' and retries>0:
             if target_time<=time.clock():
                 seq_num += 1

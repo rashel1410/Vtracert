@@ -13,7 +13,9 @@ var cur_lon=null;
 var cur_lat=null;
 var list;
 var ip_to_map;
-var line_color = 200;
+var state;
+var line_color = 400;
+var ttl = 1;
 
 function Onload(){
 
@@ -41,9 +43,8 @@ function draw_line(lat,lon,m){
     cur_lat = lat;
     cur_lon = lon;
     line_color += 60;
-    send_OK();
 }
-
+/**
 function send_OK(){
     alert('send ok');
     var xml = new XMLHttpRequest(),
@@ -62,12 +63,15 @@ function send_OK(){
     xml.send();
     return false;
 }
+**/
 
 function get_ip(xml){
 
     var xmlDoc = xml.responseXML;
     ip_to_map = xmlDoc.getElementsByTagName("ipAddr")[0].childNodes[0].nodeValue;
+    state = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
     alert(ip_to_map);
+    alert(state);
 }
 
 
@@ -76,21 +80,29 @@ function send_ip(){
     var xml = new XMLHttpRequest(),
     
         method = "GET",
-        url = "ip_or_dns?",
-        address = document.getElementById("ip_or_dns").value;
-
-    xml.open(method,url+address, true);
+        url = "trace?",
+        first_param = "ip_or_dns=",
+        first_value = document.getElementById("ip_or_dns").value,
+        sec_param = "&ttl=",
+        sec_value = String(ttl),
+        params = first_param+first_value+sec_param+sec_value;
+        
+    xml.open(method,url+params, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE && xml.status == 200) {
-                alert('send ips: True');
+                //alert('send ips: True');
                 get_ip(xml);
-                request_coordinates();
-            
+                if (state == 'NONE'){
+                    document.getElementById("demo3").innerHTML = 'Request timed out';
+                }
+                else{
+                    request_coordinates();
+                }
             }
-            
         };
 
     xml.send();
+    ttl++;
     return false;
 }
 
@@ -101,19 +113,12 @@ function request_coordinates() {
         url = "http://ip-api.com/xml/";
         address = ip_to_map;
     xml.open(method,url+address, true);
-    alert('request coordinates');
     xml.onreadystatechange = function (){
-            //alert(xml.readyState);
-            //alert('heyy');
-            //alert(xml.status);
             if(xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
-                alert('req coordinates -next- my function');
-                send_OK();
-                //myFunction(this);
+                myFunction(this);
                 
             }
         };
-    alert('end of req coordinates');
     xml.send();
     return false;
 }
@@ -122,7 +127,7 @@ function isSuccess(xml){
 
     var xmlDoc = xml.responseXML;
     xml_status = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
-    alert(xml_status);
+    //alert(xml_status);
     if (xml_status==='success'){
         return true;
     }
@@ -130,10 +135,10 @@ function isSuccess(xml){
 }
 
 function myFunction(xml) {
-    alert('myFunction');
+    //alert('myFunction');
     var xmlDoc = xml.responseXML;
     //alert(xmlDoc);
-    alert(isSuccess(xml));
+    //alert(isSuccess(xml));
     if ((xmlDoc != null) && isSuccess(xml)) {
         //if (ip_to_map != ''){
             lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
@@ -141,15 +146,22 @@ function myFunction(xml) {
             document.getElementById("demo").innerHTML = lat;
             document.getElementById("demo2").innerHTML = lon;
             draw_line(lat,lon,mymap);
-            alert('my function: isSuccessed');
+            //alert('my function: isSuccessed');
         //}
-
     }
-    if (ip_to_map == ''){
-        request_coordinates();
-        alert('ip to map==: my function ');
-
+    if (state != 'REACH'){
+        send_ip();
     }
+    else{
+        alert('The Packet reached the destination successfully!');
+    }
+
+
+//    if (ip_to_map == ''){
+//        request_coordinates();
+//        alert('ip to map==: my function ');
+
+//    }
 }
 
 

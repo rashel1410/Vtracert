@@ -104,12 +104,14 @@ def tracerout_to_ip(address):
 
 
 # gets list - creates and returns an xml
-def create_xml(ip):
+def create_xml(ip,stat):
 
     root = et.Element('list')
-    title = et.SubElement(root, 'ipAddr')
-    title.text = ip
+    ipAddress = et.SubElement(root, 'ipAddr')
+    ipAddress.text = ip
     print ip
+    status = et.SubElement(root, 'status')
+    status.text = stat
     print et.tostring(root)
     return et.tostring(root)
 
@@ -170,91 +172,74 @@ def main():
                         )
                     )
 
-                    if uri[:11] == '/ip_or_dns?':
+                    if uri[:7] == '/trace?':
                         #status,hop = my_tracerout(ip_or_dns)
-                        
                         parse = urlparse.urlparse(uri)
-                        ip_or_dns = parse.query
+                        print(parse)
+                        param = urlparse.parse_qs(parse.query).values()
+                        ip_or_dns = param[0][0]
+                        ttl = int(param[1][0])
+                        #ip_or_dns = parse.query
                         MAX_TIME = 5
-                        TTL = 1
+                        #TTL = 1
                         MAX_HOPS = 30
                         RETRIES = 3
                         IP_BEG = 32
                         CUR_HOPS = 0
                         hop = ''
                         status = 'NONE'
-                        ok = True
-                        while status!='REACH' and CUR_HOPS < MAX_HOPS:
-                            if ok:
-                                util.send_all(
-                                    s,
-                                    (
-                                            (
-                                                '%s 200 OK\r\n'
-                                            ) % (
-                                                constants.HTTP_SIGNATURE,
-                                            )
-                                    ).encode('utf-8')
-                                )
-                                status,hop = my_tracert(ip_or_dns,TTL,MAX_TIME)
-                                sys.stderr.write( "TTL "+str(TTL)+'\n')
-                                sys.stderr.write( status+'\n')
-                                ip = ''
-                                index = 0
-                                part = ''
-                                for i in range(len(hop)/2):
-                                    part = hop[index:index+2]
-                                    ip += str(int(part,16))+'.'
-                                    index += 2
-                                ip = ip[:-1]
-                                sys.stderr.write(ip+'\n\n')
-                                TTL += 1
-                                CUR_HOPS += 1
-                                print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
-                                #print type(ip_or_dns)
-                                #tracerout_to_ip(ip_or_dns)
-                                out = create_xml(ip)
-                                #print out
-                                util.send_all(
-                                    s,
-                                    (
-                                            (
-                                                'Content-Length: %s\r\n'
-                                                'Content-Type: %s\r\n'
-                                                '\r\n'
-                                            ) % (
-                                                len(out),
-                                                MIME_MAPPING.get('xml'),
-                                            )
-                                    ).encode('utf-8')
-                                )
-                                util.send_all(s, out)
-                            print uri[:9]
-                            if uri[:9] != '/next hop':
-                                ok = False
-                            else:
-                                ok = True
-
-                    # elif uri[:6] == '/list?':
-                        # parse = urlparse.urlparse(uri)
-                        # ip_list = parse.query
-                        # print ip_list
+                    #while status!='REACH' and CUR_HOPS < MAX_HOPS:
+                    
                         # util.send_all(
+                            # s,
                             # (
-                                # s,
-                                # (
-                                    # '%s 200 OK\r\n'
-                                    # 'Content-Length: %s\r\n'
-                                    # 'Content-Type: %s\r\n'
-                                    # '\r\n'
-                                # ) % (
+                                    # (
+                                        # '%s 200 OK\r\n'
+                                    # ) % (
                                         # constants.HTTP_SIGNATURE,
-                                        # len(out),
-                                        # MIME_MAPPING.get('http'),
                                     # )
-                                # ).encode('utf-8')
-                            # )
-                        # util.send_all(s, out)
+                            # ).encode('utf-8')
+                        # )
+                        status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME)
+                        sys.stderr.write( "TTL "+str(ttl)+'\n')
+                        sys.stderr.write( status+'\n')
+                        ip = ''
+                        index = 0
+                        part = ''
+                        for i in range(len(hop)/2):
+                            part = hop[index:index+2]
+                            ip += str(int(part,16))+'.'
+                            index += 2
+                        ip = ip[:-1]
+                        sys.stderr.write(ip+'\n\n')
+                        #TTL += 1
+                        CUR_HOPS += 1
+                        print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
+                        #print type(ip_or_dns)
+                        #tracerout_to_ip(ip_or_dns)
+                        out = create_xml(ip,status)
+                        #print out
+                        util.send_all(
+                            s,
+                            (
+                                    (
+                                        '%s 200 OK\r\n'
+                                        'Content-Length: %s\r\n'
+                                        'Content-Type: %s\r\n'
+                                        '\r\n'
+                                    ) % (
+                                        constants.HTTP_SIGNATURE,
+                                        len(out),
+                                        MIME_MAPPING.get('xml'),
+                                    )
+                            ).encode('utf-8')
+                        )
+                        util.send_all(s, out)
+                        #print uri
+                        # if uri[:9] != '/next hop':
+                            # ok = False
+                        # else:
+                            # ok = True
                     else:
                         with open(file_name, 'rb') as f:
                             util.send_all(

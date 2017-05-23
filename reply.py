@@ -157,6 +157,9 @@ def process_packet(packet, my_mac, my_ip, req_seq_num,ID):#content???
             
             if identifier == ID and seq == '%04x' %req_seq_num:
                 status = 'REACH'
+                hop = ('%s' % binary_to_hexstring(
+                    packet['data'][26:30],
+                ))
             
             
         elif exceeded_reply(packet,my_ip,my_mac):#, content):
