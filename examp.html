@@ -66,12 +66,12 @@ function send_OK(){
 **/
 
 function get_ip(xml){
-
+    alert('function');
     var xmlDoc = xml.responseXML;
     ip_to_map = xmlDoc.getElementsByTagName("ipAddr")[0].childNodes[0].nodeValue;
     state = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
-    alert(ip_to_map);
-    alert(state);
+    //alert(ip_to_map);
+    //alert(state);
 }
 
 
@@ -93,16 +93,18 @@ function send_ip(){
                 //alert('send ips: True');
                 get_ip(xml);
                 if (state == 'NONE'){
-                    document.getElementById("demo3").innerHTML = 'Request timed out';
+                    document.getElementById("demo").innerHTML = 'Request timed out';
+                    send_ip();
                 }
                 else{
                     request_coordinates();
                 }
             }
         };
-
-    xml.send();
+    
     ttl++;
+    xml.send();
+    //ttl++;
     return false;
 }
 
@@ -143,18 +145,20 @@ function myFunction(xml) {
         //if (ip_to_map != ''){
             lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
             lon = xmlDoc.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
-            document.getElementById("demo").innerHTML = lat;
-            document.getElementById("demo2").innerHTML = lon;
+            //document.getElementById("demo").innerHTML = lat;
+            //document.getElementById("demo2").innerHTML = lon;
             draw_line(lat,lon,mymap);
             //alert('my function: isSuccessed');
         //}
     }
-    if (state != 'REACH'){
-        send_ip();
-    }
-    else{
+    if (state == 'REACH'){
+        //send_ip();
         alert('The Packet reached the destination successfully!');
     }
+    else{
+        send_ip();
+    }
+
 
 
 //    if (ip_to_map == ''){
