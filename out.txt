@@ -1,3 +1,5 @@
+.
+Namespace(addr='8.8.8.8', base='C:\\Users\\Raya\\Documents\\Rashel-\\Project')
 8.8.8.8
 10.0.0.13
 ['10.0.0.138', '::']
@@ -5,15 +7,452 @@
 10.0.0.138
 ['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
 ['88', '1F', 'A1', '00', 'CD', '54']
-SEQ: 37
-SENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-TIME: 0.00181124417169
+SEQ: 54
+TIME: 0.00120928103111
 WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
-cd
+00
+REPLY
+my mac:881FA100CD54
+mac_dst:ffffffffffff
+00
+REPLY
+my mac:881FA100CD54
+mac_dst:ffffffffffff
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 0036
+Req_seq: 0036
+HOP 0a00008a
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 61
+TIME: 2.22709360683
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 003d
+Req_seq: 003d
+HOP d4b32501
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 101
+TIME: 4.48986234277
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 0065
+Req_seq: 0065
+HOP 0afa0025
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 76
+TIME: 6.78005989288
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 004c
+Req_seq: 004c
+HOP d4194d0e
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 73
+TIME: 9.03480676715
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 0049
+Req_seq: 0049
+HOP 3edbbd49
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 30
+TIME: 11.2557888194
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 001e
+Req_seq: 001e
+HOP d4b348f1
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 19
+TIME: 13.5101630923
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 0013
+Req_seq: 0013
+HOP 480edb3d
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 7
+TIME: 15.7404664255
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+0b
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 0b
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+<<<<<<<<<<<<<<<<<<<
+identifier: 0001
+seq: 0007
+Req_seq: 0007
+HOP 6caaf6e1
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 60
+TIME: 17.9771557442
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+01
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 11
+ip_dst: 0a00000d
+icmp_type: 01
+my_ip == ip_dst: 
+False
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+01
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 11
+ip_dst: 0a00000d
+icmp_type: 01
+my_ip == ip_dst: 
+False
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+c7
 REPLY
 my mac:881FA100CD54
 mac_dst:e8fcaf89a0e8
-cd
+c7
 REPLY
 my mac:881FA100CD54
 mac_dst:e8fcaf89a0e8
@@ -56,8 +495,42 @@ MY IP: .0a00000d.
 ID DST: .0a00000d.
 <<<<<<<<<<<<<<<<<<<
 identifier: 0001
-seq: 0025
-Req_seq: 0025
-HOP 0a00008a
-HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP
-['10.0.0.138']
+seq: 003c
+Req_seq: 003c
+HOP d155f591
+8.8.8.8
+10.0.0.13
+['10.0.0.138', '::']
+['10.0.0.138', '::']
+10.0.0.138
+['00-FF-FD-EA-A5-61', '88-1F-A1-00-CD-55', '8A-1F-A1-00-CD-54', '88-1F-A1-00-CD-54', '00-00-00-00-00-00-00-E0', '00-00-00-00-00-00-00-E0']
+['88', '1F', 'A1', '00', 'CD', '54']
+SEQ: 34
+TIME: 20.2392015889
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+08
+my mac:881FA100CD54
+mac_dst:e8fcaf89a0e8
+NONE 
+WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!
+00
+REPLY
+my mac:881FA100CD54
+mac_dst:881fa100cd54
+Mac_dst: 881fa100cd54
+eth_type: 0800
+ip protocol: 01
+ip_dst: 0a00000d
+icmp_type: 00
+my_ip == ip_dst: 
+True
+MY IP: .0a00000d.
+ID DST: .0a00000d.
+????????????????????????????????????
+identifier: 0001
+seq: 0022
+Req_seq: 0022
+REACH 08080808

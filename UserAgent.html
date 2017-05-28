@@ -15,6 +15,7 @@ var ip_to_map;
 var state;
 var line_color = 500;
 var ttl = 1;
+var count = 1;
 function Onload(){
     mymap = L.map('mapid').setView([51.505, -0.09], 1.1);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -38,6 +39,7 @@ function draw_line(lat,lon,m){
     cur_lat = lat;
     cur_lon = lon;
     line_color += 60;
+    count++;
 }
 
 function get_ip(xml){
@@ -123,7 +125,7 @@ function myFunction(xml) {
 </head>
 
 <body onload="Onload()"> 
-<div id="mapid" style="width: 700px; height: 500px;"></div>
+<div id="mapid" style="width: 800px; height: 550px;"></div>
 
 <p id="demo"></p>
 <p id="demo2"></p>

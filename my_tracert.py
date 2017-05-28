@@ -171,7 +171,6 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
 def send_my_packet(new_pack,cap):
 
     tosend = base64.b16decode(new_pack,True)
-    print "SENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
     cap.send_packet(tosend)
     
     
@@ -184,7 +183,6 @@ def send_my_packet(new_pack,cap):
 def recieve_packet(repack):
 
     corr = False
-#           hop = ''
     exceeded = False
     timeout = False
     #target_time = time.clock() + TIME
@@ -242,13 +240,11 @@ def my_tracert(dest,ttl,max_time):
                 seq_num += 1
                 new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap)
                 retries -= 1
-                sys.stderr.write(str(retries)+'\n')
+                #sys.stderr.write(str(retries)+'\n')
                 target_time = time.clock() + max_time
                 print 'TIME: '+str(time.clock())
 
-            sys.stderr.write("+")
             repack = cap.next_packet()
-            sys.stderr.write(".")
             if repack:
                 print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
                 status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
