@@ -1,20 +1,21 @@
 #!/usr/bin/python
 
 import addresses
+import base64
+import gcap
 import ipconfigMac
 import random
 import re
 import reply
 import sys
-import gcap
-import base64
 import time
 
 
 
 from checksum import calc_checksum
 
-
+## Converts a hexstring to binary bytearray
+#@ param h
 def hexstring_to_binary(h, sep=''):
     return bytearray(int(x, 16) for x in re.findall('..', h.replace(sep, '')))
     
@@ -35,22 +36,28 @@ def binary_list(s):
         out.append(hexstring_to_binary( s[2*l] + s[(2*l)+1]))
         index += 2
     return out
-    
-def reply_timeout(T):
-    target_time = T + TIME
-    
+
+
+## Construct packet
+#@ param ip_dst (string)
+#@ param ip_src (string)
+#@ param mac_dst (string)
+#@ param mac_src (string)
+#@ param ttl (int) - time to live
+#@ param seq_num (int) - initially a random number that increases with every new packet
+#@ param id (int) - identification number
+#@ param cap (gcap) - gcap object
+# returns a (string) packet
+#
+# The function constructs an icmp request packet
+# that contains the arguments it got
+#
 def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
 
-    
-    #TTL = 40
     DATA_LEN = 64
-    #MAX = 30
-    #TIME = 7
-    #CUR = 0
-
     hops = []
     corr = False
-    content = base64.b16encode('TRACE'+str(seq_num) ) # '6162636465666768696a6b6c6d6e6f7071727374757677616263646566676869'
+    content = base64.b16encode('TRACE'+str(seq_num) )
     if len(content) < DATA_LEN:
         zeros = DATA_LEN - len(content)
         while zeros != 0:
@@ -60,7 +67,7 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     print 'SEQ: '+str(seq_num)
     packet = {
               'dst': mac_dst,
-              'src': mac_src, #'881fa100cd54',
+              'src': mac_src,
               'type':'0800',
               'payload':{
                    'Header Length':'45',
@@ -71,7 +78,7 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
                    'TTL': "%02x" %ttl,
                    'Protocol':'01',
                    'Header checksum':'',
-                   'src': ip_src,#'0a000008', #'ac1001e0',
+                   'src': ip_src,
                    'dst': ip_dst,
                    'payload':{
                         'Type':'08',
@@ -100,12 +107,11 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     for p in ip_headers:
         out += p
     bin_list = binary_list(out)
+    
     # ip checksum calculation
     ip_chsum = calc_checksum(bin_list, len(bin_list))
-    #print 'new chsum'
     hex_ip_chsum = "%04x" %ip_chsum
     packet['payload']['Header checksum'] = hex_ip_chsum
-    #print packet['payload']['Header checksum']
     
     data_headers = [
         packet['payload']['payload']['Type'],
@@ -124,7 +130,6 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     data_chsum = calc_checksum(bin_list, len(bin_list))
     hex_data_chsum = "%04x" %data_chsum
     packet['payload']['payload']['Checksum'] = hex_data_chsum
-    #print packet['payload']['payload']['Checksum']
     
     
     # building the packet
@@ -153,18 +158,29 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     new_pack = ''
     for item in done_pack:
         new_pack += item
+    send_my_packet(new_pack,cap)
     
-    return new_pack,content
+    return new_pack
     
+## Send request packet
+#@ param new_pack (string) - icmp request packet to send
+#@ param cap (gcap) - gcap object
+#
+# Sends the packet using gcap
+#
 def send_my_packet(new_pack,cap):
 
     tosend = base64.b16decode(new_pack,True)
+    print "SENDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
     cap.send_packet(tosend)
     
     
-# flag = false
-# while flag==false and max<50:
-# flag is true if correct reply in reply.py and max is the maximum hops number
+## Receive packet
+#@ param repack(string) - reply packet
+# Returns hop (string) - source ip of the packet
+#
+#
+#
 def recieve_packet(repack):
 
     corr = False
@@ -201,14 +217,14 @@ def my_tracert(dest,ttl,max_time):
     with gcap.GCap(iface=iface, timeout=2000) as cap:
 
         if '.' in dest:
-            ip_dst = addresses.address_ip(dest)#'08080808'
+            ip_dst = addresses.address_ip(dest)
         else:
             ip_dst = dest
         
         seq_num = random.randint(0,100)
-        ip_src = addresses.my_ip()#'0a000008' #'ac1001e0'
-        mac_dst = ipconfigMac.dst_mac()#'e8fcaf89a0e8' #'906cac8859af'
-        mac_src = ipconfigMac.src_mac()#'881fa100cd54'
+        ip_src = addresses.my_ip()
+        mac_dst = ipconfigMac.dst_mac()
+        mac_src = ipconfigMac.src_mac()
         rand = random.randint(0,100)
         retries = 3
         status = 'NONE'
@@ -224,26 +240,20 @@ def my_tracert(dest,ttl,max_time):
         while status == 'NONE' and retries>0:
             if target_time<=time.clock():
                 seq_num += 1
-                new_pack,content = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap)
-                #content?!
+                new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap)
                 retries -= 1
                 sys.stderr.write(str(retries)+'\n')
                 target_time = time.clock() + max_time
                 print 'TIME: '+str(time.clock())
-                send_my_packet(new_pack,cap)
-                #seq_change = True
-            #else:
 
-         
             sys.stderr.write("+")
             repack = cap.next_packet()
-            #print ':::::::::::::::::::::::::::::::::::'
-            #repack = None
             sys.stderr.write(".")
             if repack:
                 print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
                 status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
-
+        if status == 'NONE':
+            status = 'TIMOEUT'
         return status, hop
 
 

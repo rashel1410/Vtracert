@@ -6,12 +6,12 @@ import sys
 def main():
     ttl = 1
     cur = 0 
-    Hop = 'dev.gentoo.org'
+    Hop = '8.8.8.8'
     args = []
     t=5
     hop = ''
     status = 'NONE'
-    while status!='REACH' and cur<20:
+    while status!='REACH' and cur<1:
         status,hop = my_tracert.my_tracert(Hop,ttl,t)
         sys.stderr.write( "TTL "+str(ttl)+'\n')
         sys.stderr.write( status+'\n')

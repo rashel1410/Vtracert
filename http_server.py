@@ -29,7 +29,9 @@ MIME_MAPPING = {
 }
 
 
-# parsing
+## Parsing
+#@ no params
+#@ returns program's arguments
 def parse_args():
     """Parse program argument."""
 
@@ -54,8 +56,14 @@ def parse_args():
     args.base = os.path.normpath(os.path.realpath(args.base))
     return args
 
-
-# used for errors
+## Send error status
+#@ param s - socket
+#@ param code (int)  -the error code
+#@ param message (string) - error message
+#@ param extra
+#
+# Used for errors
+#
 def send_status(s, code, message, extra):
 
     util.send_all(
@@ -78,8 +86,10 @@ def send_status(s, code, message, extra):
         ).encode('utf-8')
     )
 
-
-# gets an address, tracerouts, returns list of ips
+##
+#@ param address - ip or dns of the destination
+#@ returns
+# gets an address, tracerouts, returns ip, status and time
 def tracerout_to_ip(address):
 
     args = ["tracert", "-d", address]
@@ -97,16 +107,18 @@ def tracerout_to_ip(address):
                     ip_list.append(ip)
             else:
                 print line
-    print 6666666666666666666666
     print type(ip_list[0])
     print ip_list
     return ip_list
 
-
-# gets list - creates and returns an xml
+## Creates an xml
+#@ param ip (string) - ip address
+#@ param stat (string) - HOP / REACH / TIMEOUT
+#
 def create_xml(ip,stat):
 
     root = et.Element('list')
+    #ET.SubElement(root, 'result', name=file, id=str(i))
     ipAddress = et.SubElement(root, 'ipAddr')
     ipAddress.text = ip
     print ip
@@ -114,8 +126,18 @@ def create_xml(ip,stat):
     status.text = stat
     print et.tostring(root)
     return et.tostring(root)
+    
 
-
+def xml_form(self, files, ids):
+        root = ET.Element('root')
+        
+        if len(files)>0:
+            for file,i in zip(files,ids):
+                ET.SubElement(root, 'result', name=file, id=str(i))
+           
+        return ET.tostring(root)
+## main
+#
 def main():
 
     args = parse_args()
@@ -173,33 +195,18 @@ def main():
                     )
 
                     if uri[:7] == '/trace?':
-                        #status,hop = my_tracerout(ip_or_dns)
                         parse = urlparse.urlparse(uri)
                         print(parse)
                         param = urlparse.parse_qs(parse.query).values()
                         ip_or_dns = param[0][0]
                         ttl = int(param[1][0])
-                        #ip_or_dns = parse.query
                         MAX_TIME = 5
-                        #TTL = 1
                         MAX_HOPS = 30
                         RETRIES = 3
                         IP_BEG = 32
                         CUR_HOPS = 0
                         hop = ''
                         status = 'NONE'
-                    #while status!='REACH' and CUR_HOPS < MAX_HOPS:
-                    
-                        # util.send_all(
-                            # s,
-                            # (
-                                    # (
-                                        # '%s 200 OK\r\n'
-                                    # ) % (
-                                        # constants.HTTP_SIGNATURE,
-                                    # )
-                            # ).encode('utf-8')
-                        # )
                         status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
@@ -215,10 +222,7 @@ def main():
                         #TTL += 1
                         CUR_HOPS += 1
                         print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
-                        #print type(ip_or_dns)
-                        #tracerout_to_ip(ip_or_dns)
                         out = create_xml(ip,status)
-                        #print out
                         util.send_all(
                             s,
                             (

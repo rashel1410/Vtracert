@@ -1,10 +1,9 @@
 #!/usr/bin/python
 
 import addresses
+import gcap
 import ipconfigMac
 import sys
-import gcap
-#import gcap.winpcapy
 
 
 def binary_to_int(h):
@@ -61,20 +60,12 @@ def correct_addresses(packet, my_ip, my_mac):
     ip_dst = ('%s' % binary_to_hexstring(
         packet['data'][30:34],
     ))
-    #print 'ip_dst: '+ip_dst
     
     # icmp type 
     icmp_type = ('%s' % binary_to_hexstring(
         packet['data'][34:35],
     ))
-    #print 'icmp_type: '+icmp_type
-    
-    # icmp protocol 
-    # icmp_protocol = ('%s' % binary_to_hexstring(
-        # packet['data'][51:52],
-    # ))
-    # print 'icmp protocol: '+icmp_protocol
-    
+
     # data 
     data = ('%s' % binary_to_hexstring(
         packet['data'][68:100],
@@ -97,16 +88,12 @@ def correct_addresses(packet, my_ip, my_mac):
         print 'MY IP: '+'.'+my_ip+'.'
         print 'ID DST: '+'.'+ip_dst+'.'
         if (my_ip == ip_dst)and(ip_protocol==ICMP):
-            #print '>>>>>>>>>>>>>>>>>>>>>>>>'
             if icmp_type in (TTL_EXCEEDED, ECHO_REPLY):
-                #print '>>>>>>>>>>>>>>>>>>>>>>>>'
-                
                 return True
-    #print '++++++++++++++++++++++++++++++++++++++++++++++++++'
     return False
     
     
-def exceeded_reply(packet, my_ip, my_mac):#, content):
+def exceeded_reply(packet, my_ip, my_mac):
 
     # type 
     type = ('%s' % binary_to_hexstring(
@@ -136,13 +123,11 @@ def correct_reply(packet, my_ip, my_mac):#, content):
             return True
     return False
 
-def process_packet(packet, my_mac, my_ip, req_seq_num,ID):#content???
+def process_packet(packet, my_mac, my_ip, req_seq_num,ID):
 
     hop = ''
     status = 'NONE'
-    #print 'EXCEEEEEEEDEEDDDDDDDDDDDDD@@@@@@@@@@@@@@@@@@@@@@@@@@@'
     if packet:
-        #print 'EXCEEEEEEEDEEDDDDDDDDDDDDD@@@@@@@@@@@@@@@@@@@@@@@@@@@'
         if correct_reply(packet,my_ip,my_mac):#, content):
             identifier = ('%s' % binary_to_hexstring(
                 packet['data'][38:40],
@@ -162,8 +147,7 @@ def process_packet(packet, my_mac, my_ip, req_seq_num,ID):#content???
                 ))
             
             
-        elif exceeded_reply(packet,my_ip,my_mac):#, content):
-            #print 'EXCEEEEEEEDEEDDDDDDDDDDDDD@@@@@@@@@@@@@@@@@@@@@@@@@@@'
+        elif exceeded_reply(packet,my_ip,my_mac):
             identifier = ('%s' % binary_to_hexstring(
                 packet['data'][66:68],
             ))

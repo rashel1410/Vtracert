@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import subprocess
 import addresses
+import subprocess
 
 def ipconfig_all():
 

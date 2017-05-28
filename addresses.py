@@ -1,15 +1,8 @@
-
-#simport socket
-#hostname = 'www.smartschool.co.il'
-#addr = socket.gethostbyname(hostname)
-#print 'The address of ', hostname, 'is', addr
-#print 'my address' , socket.gethostbyname(socket.gethostname())
-
+#!/usr/bin/python
 
 import socket
 import struct
-#import netifaces as nif
-#import fcntl
+
 
 def my_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
