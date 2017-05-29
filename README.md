@@ -17,12 +17,12 @@ EXECUTION
 Textual Tracert:
 
 > cd [location of TextTracert.py file]
-> TextTracert.py --address [args]
+$ TextTracert.py --address [args]
 
 Visual Tracert:
 
 > cd [location of http_server.py file]
-> http_server.py
+$ http_server.py
 
 Open a web server and use the line:
 http://localhost:8080/UserAgent.html
