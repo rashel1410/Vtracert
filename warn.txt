@@ -1,0 +1,38 @@
+C:/Users/Raya/Documents/Rashel-/Project/gcap/winpcapy.py:62: warning: Compound gcap::winpcapy::timeval is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:14: warning: Compound gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/winpcapy.py:46: warning: Compound gcap::winpcapy::bpf_insn is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/winpcapy.py:541: warning: Compound gcap::winpcapy::pcap_send_queue is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/winpcapy.py:52: warning: Compound gcap::winpcapy::bpf_program is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/winpcapy.py:57: warning: Compound gcap::winpcapy::bpf_version is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:21: warning: Member TTL (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:22: warning: Member MAX_HOPS (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:23: warning: Member RETRIES (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:24: warning: Member IP_BEG (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:25: warning: Member CUR_HOPS (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:26: warning: Member MIME_MAPPING (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:64: warning: Member __init__(self, iface, timeout=10000) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:68: warning: Member __enter__(self) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:81: warning: Member __exit__(self, exc_type, exc_value, traceback) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:86: warning: Member get_address(self) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:89: warning: Member next_packet(self) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:124: warning: Member send_packet(self, data) (function) of class gcap::gcap::GCap is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/gcap/gcap.py:36: warning: Member get_interfaces() (function) of class gcap::gcap::GCap is not documented.
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+error: Problems running epstopdf. Check your TeX installation!
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:21: warning: Member TTL (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:22: warning: Member MAX_HOPS (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:23: warning: Member RETRIES (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:24: warning: Member IP_BEG (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:25: warning: Member CUR_HOPS (variable) of namespace http_server is not documented.
+C:/Users/Raya/Documents/Rashel-/Project/http_server.py:26: warning: Member MIME_MAPPING (variable) of namespace http_server is not documented.

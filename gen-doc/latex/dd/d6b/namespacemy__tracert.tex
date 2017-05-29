@@ -1,0 +1,55 @@
+\hypertarget{namespacemy__tracert}{}\section{my\+\_\+tracert Namespace Reference}
+\label{namespacemy__tracert}\index{my\+\_\+tracert@{my\+\_\+tracert}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacemy__tracert_af5359e0ead8f71c5e0a654cee22a7156}\label{namespacemy__tracert_af5359e0ead8f71c5e0a654cee22a7156}} 
+def \hyperlink{namespacemy__tracert_af5359e0ead8f71c5e0a654cee22a7156}{hexstring\+\_\+to\+\_\+binary} (h, sep=\textquotesingle{}\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Converts a hexstring to binary bytearray @ param h (string) @ param sep (string) returns a bytearray. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacemy__tracert_ae9c9f606bde976cf010d3fb3a47ef08c}\label{namespacemy__tracert_ae9c9f606bde976cf010d3fb3a47ef08c}} 
+def \hyperlink{namespacemy__tracert_ae9c9f606bde976cf010d3fb3a47ef08c}{binary\+\_\+list} (s)
+\begin{DoxyCompactList}\small\item\em Converts a string to binary list @ param s (string) returns a bytearray. \end{DoxyCompactList}\item 
+def \hyperlink{namespacemy__tracert_a55eea7ee1da325e6d2783a270a971eea}{construct\+\_\+packet} (ip\+\_\+dst, ip\+\_\+src, mac\+\_\+dst, mac\+\_\+src, ttl, seq\+\_\+num, id, cap)
+\begin{DoxyCompactList}\small\item\em Construct packet @ param ip\+\_\+dst (string) @ param ip\+\_\+src (string) @ param mac\+\_\+dst (string) @ param mac\+\_\+src (string) @ param ttl (int) -\/ time to live @ param seq\+\_\+num (int) -\/ initially a random number that increases with every new packet @ param id (int) -\/ identification number @ param cap (gcap) -\/ gcap object returns a (string) packet. \end{DoxyCompactList}\item 
+def \hyperlink{namespacemy__tracert_aee43e0ddf2646c6a5c18a70c8ebd03a4}{send\+\_\+my\+\_\+packet} (new\+\_\+pack, cap)
+\begin{DoxyCompactList}\small\item\em Send request packet @ param new\+\_\+pack (string) -\/ icmp request packet to send @ param cap (gcap) -\/ gcap object. \end{DoxyCompactList}\item 
+def \hyperlink{namespacemy__tracert_a2dd00edf3b1b902f1c9658f042991fe3}{my\+\_\+tracert} (dest, ttl, max\+\_\+time)
+\begin{DoxyCompactList}\small\item\em My Tracert @ param dest (string) -\/ destination ip or dns address @ param ttl (int) -\/ time to live value @ param max\+\_\+time (int) -\/ seconds till timeout returns hop (string-\/address) and status(string-\/\+H\+O\+P/\+R\+E\+A\+C\+H/\+T\+I\+M\+E\+O\+UT) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}my tracert \end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacemy__tracert_a55eea7ee1da325e6d2783a270a971eea}\label{namespacemy__tracert_a55eea7ee1da325e6d2783a270a971eea}} 
+\index{my\+\_\+tracert@{my\+\_\+tracert}!construct\+\_\+packet@{construct\+\_\+packet}}
+\index{construct\+\_\+packet@{construct\+\_\+packet}!my\+\_\+tracert@{my\+\_\+tracert}}
+\subsubsection{\texorpdfstring{construct\+\_\+packet()}{construct\_packet()}}
+{\footnotesize\ttfamily def my\+\_\+tracert.\+construct\+\_\+packet (\begin{DoxyParamCaption}\item[{}]{ip\+\_\+dst,  }\item[{}]{ip\+\_\+src,  }\item[{}]{mac\+\_\+dst,  }\item[{}]{mac\+\_\+src,  }\item[{}]{ttl,  }\item[{}]{seq\+\_\+num,  }\item[{}]{id,  }\item[{}]{cap }\end{DoxyParamCaption})}
+
+
+
+Construct packet @ param ip\+\_\+dst (string) @ param ip\+\_\+src (string) @ param mac\+\_\+dst (string) @ param mac\+\_\+src (string) @ param ttl (int) -\/ time to live @ param seq\+\_\+num (int) -\/ initially a random number that increases with every new packet @ param id (int) -\/ identification number @ param cap (gcap) -\/ gcap object returns a (string) packet. 
+
+The function constructs an icmp request packet that contains the arguments it got \mbox{\Hypertarget{namespacemy__tracert_a2dd00edf3b1b902f1c9658f042991fe3}\label{namespacemy__tracert_a2dd00edf3b1b902f1c9658f042991fe3}} 
+\index{my\+\_\+tracert@{my\+\_\+tracert}!my\+\_\+tracert@{my\+\_\+tracert}}
+\index{my\+\_\+tracert@{my\+\_\+tracert}!my\+\_\+tracert@{my\+\_\+tracert}}
+\subsubsection{\texorpdfstring{my\+\_\+tracert()}{my\_tracert()}}
+{\footnotesize\ttfamily def my\+\_\+tracert.\+my\+\_\+tracert (\begin{DoxyParamCaption}\item[{}]{dest,  }\item[{}]{ttl,  }\item[{}]{max\+\_\+time }\end{DoxyParamCaption})}
+
+
+
+My Tracert @ param dest (string) -\/ destination ip or dns address @ param ttl (int) -\/ time to live value @ param max\+\_\+time (int) -\/ seconds till timeout returns hop (string-\/address) and status(string-\/\+H\+O\+P/\+R\+E\+A\+C\+H/\+T\+I\+M\+E\+O\+UT) 
+
+Sends an icmp echo request packet to the given destination trys 3 times, if no related reply -\/ echo reply/exceeded reply sends status T\+I\+M\+E\+O\+UT else -\/ when recognizes echo reply packet -\/ R\+E\+A\+C\+H/ exceeded reply -\/ H\+OP \mbox{\Hypertarget{namespacemy__tracert_aee43e0ddf2646c6a5c18a70c8ebd03a4}\label{namespacemy__tracert_aee43e0ddf2646c6a5c18a70c8ebd03a4}} 
+\index{my\+\_\+tracert@{my\+\_\+tracert}!send\+\_\+my\+\_\+packet@{send\+\_\+my\+\_\+packet}}
+\index{send\+\_\+my\+\_\+packet@{send\+\_\+my\+\_\+packet}!my\+\_\+tracert@{my\+\_\+tracert}}
+\subsubsection{\texorpdfstring{send\+\_\+my\+\_\+packet()}{send\_my\_packet()}}
+{\footnotesize\ttfamily def my\+\_\+tracert.\+send\+\_\+my\+\_\+packet (\begin{DoxyParamCaption}\item[{}]{new\+\_\+pack,  }\item[{}]{cap }\end{DoxyParamCaption})}
+
+
+
+Send request packet @ param new\+\_\+pack (string) -\/ icmp request packet to send @ param cap (gcap) -\/ gcap object. 
+
+Sends the packet using gcap 

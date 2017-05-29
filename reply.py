@@ -1,4 +1,6 @@
 #!/usr/bin/python
+""" works with icmp reply packets """
+## @file reply.py Functions that are used for reply packets
 
 import addresses
 import gcap
@@ -6,32 +8,22 @@ import ipconfigMac
 import sys
 
 
-def binary_to_int(h):
-    ret = 0
-    for x in bytearray(h):
-        ret = (ret << 8) + x
-    return ret
-
-
+## Converts binary to hexstring
+#@ param h (bin)
+#@ param sep (string)
+# returns hexstring
+#
 def binary_to_hexstring(h, sep=''):
     return sep.join('%02x' % x for x in bytearray(h))
 
-
-def function(packet, cap, my_ip, my_mac, content):
-
-    if packet:
-        # ip source
-        ip_src = ('%s' % binary_to_hexstring(
-            packet['data'][26:30],
-        ))
-        #print ip_src
-        if exceeded_reply(packet, cap,my_ip,my_mac, content):
-            #hops.append(ip_src)
-            return ip_src
-        elif correct_reply(packet, cap,my_ip,my_mac, content):
-            print "correct R"
-    return ''
-
+## If correct addresses
+#@ param packet (string)
+#@ param my_ip (string)
+#@ param my_mac (string)
+#
+# The function checks all the addresses and returns true
+# if the packet is exceeded_reply or echo reply
+#
 def correct_addresses(packet, my_ip, my_mac):
     
     TTL_EXCEEDED = '0b'
@@ -77,8 +69,8 @@ def correct_addresses(packet, my_ip, my_mac):
     print "my mac:"+my_mac
     print "mac_dst:"+mac_dst
     if (my_mac.upper() == mac_dst.upper())and(eth_type == ETH_TYPE):
-        #print '>>>>>>>>>>>>>>>>>>>>>>>>'
-        print 'Mac_dst: '+mac_dst
+    
+        """print 'Mac_dst: '+mac_dst
         print 'eth_type: '+eth_type
         print 'ip protocol: '+ip_protocol
         print 'ip_dst: '+ip_dst
@@ -86,13 +78,21 @@ def correct_addresses(packet, my_ip, my_mac):
         print 'my_ip == ip_dst: '
         print my_ip == ip_dst and ip_protocol==ICMP
         print 'MY IP: '+'.'+my_ip+'.'
-        print 'ID DST: '+'.'+ip_dst+'.'
+        print 'ID DST: '+'.'+ip_dst+'.'"""
+        
         if (my_ip == ip_dst)and(ip_protocol==ICMP):
             if icmp_type in (TTL_EXCEEDED, ECHO_REPLY):
                 return True
     return False
     
     
+## True if exceeded reply
+#@ param packet (string)
+#@ param my_ip (string)
+#@ param my_mac (string)
+#
+# The function returns true if the packet is exceeded - type '0b' (11)
+#
 def exceeded_reply(packet, my_ip, my_mac):
 
     # type 
@@ -103,11 +103,18 @@ def exceeded_reply(packet, my_ip, my_mac):
 
     for_me = correct_addresses(packet, my_ip, my_mac)
     if for_me:
-        print '<<<<<<<<<<<<<<<<<<<'
         if type == '0b':
             return True
     return False
     
+## True if exceeded reply
+#@ param packet (string)
+#@ param my_ip (string)
+#@ param my_mac (string)
+# returns true/false
+#
+# The function returns true if the packet is echo reply - type '00'
+#
 def correct_reply(packet, my_ip, my_mac):#, content):
 
     # type 
@@ -118,17 +125,28 @@ def correct_reply(packet, my_ip, my_mac):#, content):
 
     for_me = correct_addresses(packet, my_ip, my_mac)
     if for_me:
-        print '????????????????????????????????????'
         if type == '00':
             return True
     return False
 
+## True if exceeded reply
+#@ param packet (string)
+#@ param my_ip (string)
+#@ param my_mac (string)
+#@ req_seq_num (int) - sequence number that increases in each echo request we send
+#@ ID (string) - constant field
+# returns hop (string-address) and status(string-HOP/REACH/NONE)
+#
+# if exceeded reply - HOP - ip address
+# if echo reply - REACH - ip address
+# if none of the above - NONE - ip address = ''
+#
 def process_packet(packet, my_mac, my_ip, req_seq_num,ID):
 
     hop = ''
     status = 'NONE'
     if packet:
-        if correct_reply(packet,my_ip,my_mac):#, content):
+        if correct_reply(packet,my_ip,my_mac):
             identifier = ('%s' % binary_to_hexstring(
                 packet['data'][38:40],
             ))
@@ -164,15 +182,8 @@ def process_packet(packet, my_mac, my_ip, req_seq_num,ID):
                 hop = ('%s' % binary_to_hexstring(
                     packet['data'][26:30],
                 ))
-    #sys.stderr.write( "TTL "+str(ttl)+'\n')
-    #sys.stderr.write( status+'\n')
-    #sys.stderr.write(hop+'\n')
     print status,hop
     return status,hop
-    
-    
-#icmp,type,same data?
-# ttl and data are changing each request
 
 
 # vim: expandtab tabstop=4 shiftwidth=4

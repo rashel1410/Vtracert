@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+""" checksum """
+## @file checksum.py Written by Grant Curell
 #-------------------------------------------------------------------------------
 # Name:        checksum.py
 #
@@ -10,6 +12,10 @@
 #-------------------------------------------------------------------------------
     
     
+## Calculate the checksum
+#@ param header (string) - headers of the packet
+#@ param size (int) - header size - to check if odd
+#
 def calc_checksum(header, size):
     
     cksum = 0

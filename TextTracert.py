@@ -1,4 +1,6 @@
 #!/usr/bin/python
+""" Textual Tracert """
+## @file TextTracert.py The textual tracert program
 
 import argparse
 import os
@@ -12,8 +14,8 @@ from common import constants
 from common import util
 
 ## Parsing
-#@ no params
-#@ returns program's arguments
+# returns program's arguments
+#
 def parse_args():
     """Parse program argument."""
 
@@ -25,6 +27,8 @@ def parse_args():
     args = parser.parse_args()
     return args
     
+## main
+#
 def main():
     
     args = parse_args()
@@ -57,5 +61,3 @@ def main():
 if __name__ == '__main__':
     main()
     
-#01110011-01101000-01100001-01100010-01100001-01101011
-#101001 10110100 00110000 101100010 01100001 01101011

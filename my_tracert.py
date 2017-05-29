@@ -1,5 +1,6 @@
 #!/usr/bin/python
-
+""" my tracert """
+## @file my_tracert.py Traces to a given destination
 import addresses
 import base64
 import gcap
@@ -10,15 +11,12 @@ import reply
 import sys
 import time
 
-
 from checksum import calc_checksum
 
-## Hexstring to binary bytearray
+## Converts a hexstring to binary bytearray
 #@ param h (string)
 #@ param sep (string)
 # returns a bytearray
-#
-# Converts a hexstring to binary bytearray
 #
 def hexstring_to_binary(h, sep=''):
     return bytearray(int(x, 16) for x in re.findall('..', h.replace(sep, '')))
@@ -174,36 +172,16 @@ def send_my_packet(new_pack,cap):
     cap.send_packet(tosend)
     
     
-## Receive packet
-#@ param repack(string) - reply packet
-# Returns hop (string) - source ip of the packet
+## My Tracert
+#@ param dest (string) - destination ip or dns address
+#@ param ttl (int) - time to live value
+#@ param max_time (int) - seconds till timeout
+# returns hop (string-address) and status(string-HOP/REACH/TIMEOUT)
 #
+# Sends an icmp echo request packet to the given destination
+# trys 3 times, if no related reply - echo reply/exceeded reply sends status TIMEOUT
+# else - when recognizes echo reply packet - REACH/ exceeded reply - HOP
 #
-#
-def recieve_packet(repack):
-
-    corr = False
-    exceeded = False
-    timeout = False
-    #target_time = time.clock() + TIME
-    while not exceeded and not corr and not timeout:
-        hop = reply.function(repack,cap, ip_src, mac_src, content)
-        if hop != '': #if exceeded
-            #hops.append(hop)
-            exceeded = True
-            #exceeded = reply.exceeded_reply(repack, cap, ip_src, mac_src, content)
-        corr = reply.correct_reply(repack, cap, ip_src, mac_src, content)
-        print '------------------------------------------------------'
-    if target_time<=time.clock():
-        timeout = True
-    if timeout:
-        print 'SEND AGAIN'
-            
-            
-    if corr:
-        print 'corr'
-    return hop
-
 def my_tracert(dest,ttl,max_time):
 
     ID = '0001'
@@ -251,15 +229,5 @@ def my_tracert(dest,ttl,max_time):
         if status == 'NONE':
             status = 'TIMOEUT'
         return status, hop
-
-
-#if __name__ == '__main__':
-#    main()
-    
-######## XML,HTTP SERVER, GIS, ETHERNET
-    
-    
-# dst - mine
-# ttl - expired / type11?
 
 # vim: expandtab tabstop=4 shiftwidth=4

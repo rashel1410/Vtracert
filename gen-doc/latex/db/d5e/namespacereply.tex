@@ -1,0 +1,64 @@
+\hypertarget{namespacereply}{}\section{reply Namespace Reference}
+\label{namespacereply}\index{reply@{reply}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacereply_a1f0d487d6345a21b962e10469323752d}\label{namespacereply_a1f0d487d6345a21b962e10469323752d}} 
+def \hyperlink{namespacereply_a1f0d487d6345a21b962e10469323752d}{binary\+\_\+to\+\_\+hexstring} (h, sep=\textquotesingle{}\textquotesingle{})
+\begin{DoxyCompactList}\small\item\em Converts binary to hexstring @ param h (bin) @ param sep (string) returns hexstring. \end{DoxyCompactList}\item 
+def \hyperlink{namespacereply_ad9c1e99c3980b4b1dfd1f7a6a5bb8683}{correct\+\_\+addresses} (packet, my\+\_\+ip, my\+\_\+mac)
+\begin{DoxyCompactList}\small\item\em If correct addresses @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) \end{DoxyCompactList}\item 
+def \hyperlink{namespacereply_ad152c5c2603b1c92f0ef5c5760e62e7d}{exceeded\+\_\+reply} (packet, my\+\_\+ip, my\+\_\+mac)
+\begin{DoxyCompactList}\small\item\em True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) \end{DoxyCompactList}\item 
+def \hyperlink{namespacereply_a8fecb9b3744fbc25a42bcbb747e641fa}{correct\+\_\+reply} (packet, my\+\_\+ip, my\+\_\+mac)
+\begin{DoxyCompactList}\small\item\em True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) returns true/false. \end{DoxyCompactList}\item 
+def \hyperlink{namespacereply_adb013751d024e7ccadaaffaf62a5cf39}{process\+\_\+packet} (packet, my\+\_\+mac, my\+\_\+ip, req\+\_\+seq\+\_\+num, ID)
+\begin{DoxyCompactList}\small\item\em True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) @ req\+\_\+seq\+\_\+num (int) -\/ sequence number that increases in each echo request we send @ ID (string) -\/ constant field returns hop (string-\/address) and status(string-\/\+H\+O\+P/\+R\+E\+A\+C\+H/\+N\+O\+NE) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}works with icmp reply packets \end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespacereply_ad9c1e99c3980b4b1dfd1f7a6a5bb8683}\label{namespacereply_ad9c1e99c3980b4b1dfd1f7a6a5bb8683}} 
+\index{reply@{reply}!correct\+\_\+addresses@{correct\+\_\+addresses}}
+\index{correct\+\_\+addresses@{correct\+\_\+addresses}!reply@{reply}}
+\subsubsection{\texorpdfstring{correct\+\_\+addresses()}{correct\_addresses()}}
+{\footnotesize\ttfamily def reply.\+correct\+\_\+addresses (\begin{DoxyParamCaption}\item[{}]{packet,  }\item[{}]{my\+\_\+ip,  }\item[{}]{my\+\_\+mac }\end{DoxyParamCaption})}
+
+
+
+If correct addresses @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) 
+
+The function checks all the addresses and returns true if the packet is exceeded\+\_\+reply or echo reply \mbox{\Hypertarget{namespacereply_a8fecb9b3744fbc25a42bcbb747e641fa}\label{namespacereply_a8fecb9b3744fbc25a42bcbb747e641fa}} 
+\index{reply@{reply}!correct\+\_\+reply@{correct\+\_\+reply}}
+\index{correct\+\_\+reply@{correct\+\_\+reply}!reply@{reply}}
+\subsubsection{\texorpdfstring{correct\+\_\+reply()}{correct\_reply()}}
+{\footnotesize\ttfamily def reply.\+correct\+\_\+reply (\begin{DoxyParamCaption}\item[{}]{packet,  }\item[{}]{my\+\_\+ip,  }\item[{}]{my\+\_\+mac }\end{DoxyParamCaption})}
+
+
+
+True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) returns true/false. 
+
+The function returns true if the packet is echo reply -\/ type \textquotesingle{}00\textquotesingle{} \mbox{\Hypertarget{namespacereply_ad152c5c2603b1c92f0ef5c5760e62e7d}\label{namespacereply_ad152c5c2603b1c92f0ef5c5760e62e7d}} 
+\index{reply@{reply}!exceeded\+\_\+reply@{exceeded\+\_\+reply}}
+\index{exceeded\+\_\+reply@{exceeded\+\_\+reply}!reply@{reply}}
+\subsubsection{\texorpdfstring{exceeded\+\_\+reply()}{exceeded\_reply()}}
+{\footnotesize\ttfamily def reply.\+exceeded\+\_\+reply (\begin{DoxyParamCaption}\item[{}]{packet,  }\item[{}]{my\+\_\+ip,  }\item[{}]{my\+\_\+mac }\end{DoxyParamCaption})}
+
+
+
+True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) 
+
+The function returns true if the packet is exceeded -\/ type \textquotesingle{}0b\textquotesingle{} (11) \mbox{\Hypertarget{namespacereply_adb013751d024e7ccadaaffaf62a5cf39}\label{namespacereply_adb013751d024e7ccadaaffaf62a5cf39}} 
+\index{reply@{reply}!process\+\_\+packet@{process\+\_\+packet}}
+\index{process\+\_\+packet@{process\+\_\+packet}!reply@{reply}}
+\subsubsection{\texorpdfstring{process\+\_\+packet()}{process\_packet()}}
+{\footnotesize\ttfamily def reply.\+process\+\_\+packet (\begin{DoxyParamCaption}\item[{}]{packet,  }\item[{}]{my\+\_\+mac,  }\item[{}]{my\+\_\+ip,  }\item[{}]{req\+\_\+seq\+\_\+num,  }\item[{}]{ID }\end{DoxyParamCaption})}
+
+
+
+True if exceeded reply @ param packet (string) @ param my\+\_\+ip (string) @ param my\+\_\+mac (string) @ req\+\_\+seq\+\_\+num (int) -\/ sequence number that increases in each echo request we send @ ID (string) -\/ constant field returns hop (string-\/address) and status(string-\/\+H\+O\+P/\+R\+E\+A\+C\+H/\+N\+O\+NE) 
+
+if exceeded reply -\/ H\+OP -\/ ip address if echo reply -\/ R\+E\+A\+CH -\/ ip address if none of the above -\/ N\+O\+NE -\/ ip address = \textquotesingle{}\textquotesingle{} 

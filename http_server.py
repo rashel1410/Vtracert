@@ -1,4 +1,6 @@
 #!/usr/bin/python
+""" http server """
+## @file http_server.py A server on http protocol
 
 import argparse
 import contextlib
@@ -32,6 +34,7 @@ MIME_MAPPING = {
 ## Parsing
 #@ no params
 #@ returns program's arguments
+#
 def parse_args():
     """Parse program argument."""
 
@@ -86,30 +89,6 @@ def send_status(s, code, message, extra):
         ).encode('utf-8')
     )
 
-##
-#@ param address - ip or dns of the destination
-#@ returns
-# gets an address, tracerouts, returns ip, status and time
-def tracerout_to_ip(address):
-
-    args = ["tracert", "-d", address]
-    proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
-    print 'tracing'
-    data = proc.communicate()[0]
-    lines = data.split('\r\n')
-    ip_list = []
-    for line in lines:
-        if line != "":
-            if line[0] == ' ':
-                ip = line[IP_BEG:]
-                ip = ip.strip(' ')
-                if ip != 'Request timed out.':
-                    ip_list.append(ip)
-            else:
-                print line
-    print type(ip_list[0])
-    print ip_list
-    return ip_list
 
 ## Creates an xml
 #@ param ip (string) - ip address
@@ -118,7 +97,6 @@ def tracerout_to_ip(address):
 def create_xml(ip,stat):
 
     root = et.Element('list')
-    #ET.SubElement(root, 'result', name=file, id=str(i))
     ipAddress = et.SubElement(root, 'ipAddr')
     ipAddress.text = ip
     print ip
@@ -128,14 +106,6 @@ def create_xml(ip,stat):
     return et.tostring(root)
     
 
-def xml_form(self, files, ids):
-        root = ET.Element('root')
-        
-        if len(files)>0:
-            for file,i in zip(files,ids):
-                ET.SubElement(root, 'result', name=file, id=str(i))
-           
-        return ET.tostring(root)
 ## main
 #
 def main():
@@ -219,7 +189,6 @@ def main():
                             index += 2
                         ip = ip[:-1]
                         sys.stderr.write(ip+'\n\n')
-                        #TTL += 1
                         CUR_HOPS += 1
                         print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
                         out = create_xml(ip,status)
@@ -239,11 +208,6 @@ def main():
                             ).encode('utf-8')
                         )
                         util.send_all(s, out)
-                        #print uri
-                        # if uri[:9] != '/next hop':
-                            # ok = False
-                        # else:
-                            # ok = True
                     else:
                         with open(file_name, 'rb') as f:
                             util.send_all(
@@ -297,15 +261,5 @@ def main():
 if __name__ == '__main__':
     main()
 
-#
-# locathost/tracerout -> calls examp.html ->
-# input an address into html field ->
-# python calls tracerout and creates a list of addresses->
-# calls api site and creates a map with the coordinates ->
-#
-
-# cd C:\Users\Raya\Documents\Rashel-\network-course-master
 # Python -m http.server --bind-port 8080
 # vim: expandtab tabstop=4 shiftwidth=4
-
-# 172.16.255.254
