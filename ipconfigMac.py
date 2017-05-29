@@ -16,37 +16,14 @@ def src_mac():
     lines = ipconfig_all()
     macs = []
     cnt=0
-    #print data
-    #print lines
     for line in lines:
         if line != '':
             if line[0] == ' ':
                 if ': ' in line:
                     key, value = line.split(': ')
-                    #print key.strip(' .'),value.strip()
                     if key.strip(' .') == 'Physical Address':
                         macs.append(value.strip())
-                    #print key.strip(' .'),result[key.strip(' .')]
-                    
-            #result[result_key] = temp
-            
-    # for line in lines:
-        # temp = {}
-        # if line != '':
-            # if line[0] != ' ':
-                # result_key = line.strip()
-            # if line[0] == ' ':
-                # if ': ' in line:
-                    # key, value = line.split(': ')
-                    # #print key.strip(' .'),value.strip()
-                    # temp[key.strip(' .')] = value.strip()
-                    # #print key.strip(' .'),result[key.strip(' .')]
-                    # cnt += 1
-            # result[result_key] = temp
-    #print result
-    #for key,val in result:
-    
-    print macs
+
     src_mac = macs[3].split('-')
     out_src = ''
     for part in src_mac:
@@ -65,9 +42,7 @@ def dst_mac():
                     if "Default Gateway" in line:
                         key,value = line.split(': ')
                         ips.append(value.strip())
-    print ips
     ip = ips[0]
-    print ips
     args = ["arp", "-a"]
     proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
     data = proc.stdout.read()
@@ -75,7 +50,6 @@ def dst_mac():
     mac = ''
     start = 24
     end = 41
-    print ip
     for row in rows:
         if row != '':
             if ip in row:

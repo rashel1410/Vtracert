@@ -43,7 +43,6 @@ function draw_line(lat,lon,m){
 }
 
 function get_ip(xml){
-    alert('function');
     var xmlDoc = xml.responseXML;
     ip_to_map = xmlDoc.getElementsByTagName("ipAddr")[0].childNodes[0].nodeValue;
     state = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
@@ -63,7 +62,6 @@ function send_ip(){
     xml.open(method,url+params, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE && xml.status == 200) {
-                //alert('send ips: True');
                 get_ip(xml);
                 if (state == 'TIMEOUT'){
                     document.getElementById("demo").innerHTML = 'Request timed out';
@@ -127,15 +125,12 @@ function myFunction(xml) {
 <body onload="Onload()"> 
 <div id="mapid" style="width: 800px; height: 550px;"></div>
 
-<p id="demo"></p>
-<p id="demo2"></p>
-
 <form onsubmit='return send_ip()' >
 <p>
 Enter an ip address or dns: 
 </p>
 <input  id="ip_or_dns"><br>
-<input type="submit" value="Trace" >
+<input type="submit" value="Trace!" >
 
 
 </form>

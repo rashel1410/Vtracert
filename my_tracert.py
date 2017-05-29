@@ -11,24 +11,23 @@ import sys
 import time
 
 
-
 from checksum import calc_checksum
 
-## Converts a hexstring to binary bytearray
-#@ param h
+## Hexstring to binary bytearray
+#@ param h (string)
+#@ param sep (string)
+# returns a bytearray
+#
+# Converts a hexstring to binary bytearray
+#
 def hexstring_to_binary(h, sep=''):
     return bytearray(int(x, 16) for x in re.findall('..', h.replace(sep, '')))
     
-def int_to_binary(i, n):
-    l = []
-    for x in range(n):
-        l.append(i & 0xff)
-        i >>= 8
-    return bytearray(l[::-1])
-    
-def binary_to_hexstring(h, sep=''):
-    return sep.join('%02x' % x for x in bytearray(h))
-    
+
+## Converts a string to binary list
+#@ param s (string)
+# returns a bytearray
+#
 def binary_list(s):
     out = []
     index = 0
@@ -65,6 +64,7 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
             zeros -= 1
     
     print 'SEQ: '+str(seq_num)
+    print ip_dst
     packet = {
               'dst': mac_dst,
               'src': mac_src,
