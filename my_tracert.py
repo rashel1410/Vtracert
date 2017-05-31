@@ -157,7 +157,7 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     for item in done_pack:
         new_pack += item
     send_my_packet(new_pack,cap)
-    
+    print new_pack
     return new_pack
     
 ## Send request packet
@@ -167,7 +167,6 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
 # Sends the packet using gcap
 #
 def send_my_packet(new_pack,cap):
-
     tosend = base64.b16decode(new_pack,True)
     cap.send_packet(tosend)
     
@@ -183,14 +182,10 @@ def send_my_packet(new_pack,cap):
 # else - when recognizes echo reply packet - REACH/ exceeded reply - HOP
 #
 def my_tracert(dest,ttl,max_time):
-
-    ID = '0001'
-    if len(sys.argv) > 1:
-        iface = sys.argv[1]
-    else:
-        iface = gcap.GCap.get_interfaces()[0]['name']
-
+    ID = '1234'
+    iface = gcap.GCap.get_interfaces()[0]['name']
     with gcap.GCap(iface=iface, timeout=2000) as cap:
+    
 
         if '.' in dest:
             ip_dst = addresses.address_ip(dest)
@@ -227,7 +222,7 @@ def my_tracert(dest,ttl,max_time):
                 print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
                 status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
         if status == 'NONE':
-            status = 'TIMOEUT'
+            status = 'TIMEOUT'
         return status, hop
 
 # vim: expandtab tabstop=4 shiftwidth=4

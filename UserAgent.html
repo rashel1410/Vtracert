@@ -46,9 +46,15 @@ function draw_line(lat,lon,m){
 
 // Reset the arguments of status and address from a given xml
 function get_ip(xml){
+    console.log(1);
     var xmlDoc = xml.responseXML;
+    console.log(2);
     ip_to_map = xmlDoc.getElementsByTagName("ipAddr")[0].childNodes[0].nodeValue;
+    console.log(3);
+    alert(ip_to_map);
     state = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
+    console.log(4);
+    alert(state);
 }
 
 // Sends request to the server with the dest. address and ttl value
@@ -67,9 +73,11 @@ function send_ip(){
     xml.open(method,url+params, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE && xml.status == 200) {
+                alert('onready');
                 get_ip(xml);
                 if (state == 'TIMEOUT'){
-                    document.getElementById("demo").innerHTML = 'Request timed out';
+                    //alert('TIMEOUT');
+                    //document.getElementById("demo").innerHTML = 'Request timed out';
                     send_ip();
                 }
                 else{

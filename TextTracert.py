@@ -27,36 +27,48 @@ def parse_args():
     args = parser.parse_args()
     return args
     
-## main
+## Textual tracert
+#@ param dest (string) - address to trace
 #
-def main():
+# Prints to the screen a serial num of the hop and the ip address
+#
+def TextTracert(dest):
     
-    args = parse_args()
-    print args.address
-    print type(args.address)
     ttl = 1
     t=5
     hop = ''
-    MAX_HOPS = 20
+    MAX_HOPS = 30
     status = 'NONE'
     while status != 'REACH' and ttl < MAX_HOPS:
     
-        status,hop = my_tracert.my_tracert(args.address,ttl,t)
-        ip = ''
-        index = 0
-        part = ''
-        for i in range(len(hop)/2):
-            part = hop[index:index+2]
-            ip += str(int(part,16))+'.'
-            index += 2
-        ip = ip[:-1]
-        sys.stderr.write(str(ttl)+'\t')
-        sys.stderr.write(ip+'\n')
+        status,hop = my_tracert.my_tracert(dest,ttl,t)
+        if status == "TIMEOUT":
+            sys.stderr.write('  '+str(ttl)+'\t')
+            sys.stderr.write('\t*\n')
+        else:
+            ip = ''
+            index = 0
+            part = ''
+            for i in range(len(hop)/2):
+                part = hop[index:index+2]
+                ip += str(int(part,16))+'.'
+                index += 2
+            ip = ip[:-1]
+            sys.stderr.write('  '+str(ttl)+'\t')
+            sys.stderr.write(ip+'\n')
         ttl += 1
     if status=='REACH':
-        sys.stderr.write('Trace complete. The packet reached the destination!')
+        sys.stderr.write('Trace complete. The packet reached the destination!\n')
     else:
         sys.stderr.write('Tracert timed out - max %s hops\n' %MAX_HOPS)
+        
+## main
+#
+def main():
+    args = parse_args()
+    print args.address
+    print type(args.address)
+    TextTracert(args.address)
     
 if __name__ == '__main__':
     main()

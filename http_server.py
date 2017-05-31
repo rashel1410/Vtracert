@@ -22,7 +22,6 @@ TTL = 1
 MAX_HOPS = 30
 RETRIES = 3
 IP_BEG = 32
-CUR_HOPS = 0
 MIME_MAPPING = {
     'xml': 'text/xml',
     'html': 'text/html',
@@ -96,12 +95,8 @@ def send_status(s, code, message, extra):
 #
 def create_xml(ip,stat):
 
-    root = et.Element('list')
-    ipAddress = et.SubElement(root, 'ipAddr')
-    ipAddress.text = ip
-    print ip
-    status = et.SubElement(root, 'status')
-    status.text = stat
+    root = et.Element('root')
+    status = et.SubElement(root, 'result', ipAddr=ip, status=stat)
     print et.tostring(root)
     return et.tostring(root)
     
@@ -174,7 +169,6 @@ def main():
                         MAX_HOPS = 30
                         RETRIES = 3
                         IP_BEG = 32
-                        CUR_HOPS = 0
                         hop = ''
                         status = 'NONE'
                         status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME)
@@ -189,7 +183,6 @@ def main():
                             index += 2
                         ip = ip[:-1]
                         sys.stderr.write(ip+'\n\n')
-                        CUR_HOPS += 1
                         print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
                         out = create_xml(ip,status)
                         util.send_all(
