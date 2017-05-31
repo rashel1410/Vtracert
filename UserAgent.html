@@ -11,7 +11,7 @@
 var mymap; // the map object
 var cur_lon=null; // current latitude
 var cur_lat=null; // current longtitude
-var ip_to_map; // ip address given by to user
+var ip_to_map; // ip address given by tracert program
 var state; // status
 var line_color = 500; // route line initial color
 var ttl = 1; // time to live
@@ -46,15 +46,10 @@ function draw_line(lat,lon,m){
 
 // Reset the arguments of status and address from a given xml
 function get_ip(xml){
-    console.log(1);
     var xmlDoc = xml.responseXML;
-    console.log(2);
-    ip_to_map = xmlDoc.getElementsByTagName("ipAddr")[0].childNodes[0].nodeValue;
-    console.log(3);
-    alert(ip_to_map);
-    state = xmlDoc.getElementsByTagName("status")[0].childNodes[0].nodeValue;
-    console.log(4);
-    alert(state);
+    result = xmlDoc.getElementsByTagName("result")[0]
+    ip_to_map = result.getAttribute("ipAddr")
+    state = result.getAttribute("status")
 }
 
 // Sends request to the server with the dest. address and ttl value
@@ -73,11 +68,8 @@ function send_ip(){
     xml.open(method,url+params, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE && xml.status == 200) {
-                alert('onready');
                 get_ip(xml);
                 if (state == 'TIMEOUT'){
-                    //alert('TIMEOUT');
-                    //document.getElementById("demo").innerHTML = 'Request timed out';
                     send_ip();
                 }
                 else{
@@ -141,6 +133,8 @@ function myFunction(xml) {
 
 <body onload="Onload()"> 
 <div id="mapid" style="width: 800px; height: 550px;"></div>
+
+<p id="demo"></p><br>
 
 <form onsubmit='return send_ip()' >
 <p>

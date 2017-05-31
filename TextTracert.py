@@ -39,6 +39,7 @@ def TextTracert(dest):
     hop = ''
     MAX_HOPS = 30
     status = 'NONE'
+    sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n' %(dest, MAX_HOPS))
     while status != 'REACH' and ttl < MAX_HOPS:
     
         status,hop = my_tracert.my_tracert(dest,ttl,t)
@@ -62,12 +63,11 @@ def TextTracert(dest):
     else:
         sys.stderr.write('Tracert timed out - max %s hops\n' %MAX_HOPS)
         
+        
 ## main
 #
 def main():
     args = parse_args()
-    print args.address
-    print type(args.address)
     TextTracert(args.address)
     
 if __name__ == '__main__':
