@@ -12,6 +12,7 @@ import sys
 import time
 import datetime
 
+from common import constants
 from checksum import calc_checksum
 
 ## Converts a hexstring to binary bytearray
@@ -52,36 +53,35 @@ def binary_list(s):
 #
 def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap,fd,to_file):
 
-    DATA_LEN = 64
     hops = []
-    corr = False
     content = base64.b16encode('TRACE'+str(seq_num) )
-    if len(content) < DATA_LEN:
-        zeros = DATA_LEN - len(content)
+    if len(content) < constants.DATA_LEN:
+        zeros = constants.DATA_LEN - len(content)
         while zeros != 0:
             content += '0'
             zeros -= 1
     if to_file:
         fd.write( 'SEQ: '+str(seq_num) )
         fd.write( ip_dst )
+    
     packet = {
               'dst': mac_dst,
               'src': mac_src,
-              'type':'0800',
+              'type': constants.ETH_TYPE,
               'payload':{
-                   'Header Length':'45',
-                   'Diff Services Field':'00',
-                   'Total Length':'003c',
-                   'Identification':'3db1',
-                   'Fragment offset':'0000',
+                   'Header Length': constants.HEADER_LEN,
+                   'Diff Services Field': constants.DIFF_FIELD,
+                   'Total Length': constants.TOTAL_LEN,
+                   'Identification': constants.IDENTIFICATION,
+                   'Fragment offset': constants.FRAGM_OFFSET,
                    'TTL': "%02x" %ttl,
-                   'Protocol':'01',
+                   'Protocol': constants.IP_PROT,
                    'Header checksum':'',
                    'src': ip_src,
                    'dst': ip_dst,
                    'payload':{
-                        'Type':'08',
-                        'Code':'00',
+                        'Type': constants.ICMP_ECHO_TYPE,
+                        'Code': constants.ICMP_CODE,
                         'Checksum':'',
                         'Identifier':id,
                         'Sequence num':'%04x' %seq_num,
@@ -158,9 +158,11 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap,fd,to_fi
     for item in done_pack:
         new_pack += item
     send_my_packet(new_pack,cap)
+    
     if to_file:
         fd.write( new_pack )
     return new_pack
+    
     
 ## Send request packet
 #@ param new_pack (string) - icmp request packet to send
@@ -183,10 +185,10 @@ def send_my_packet(new_pack,cap):
 # trys 3 times, if no related reply - echo reply/exceeded reply sends status TIMEOUT
 # else - when recognizes echo reply packet - REACH/ exceeded reply - HOP
 #
-def my_tracert(dest,ttl,max_time,mac,last_delta,to_file):
-    ID = '1234'
+def my_tracert(dest,ttl,max_time,mac,to_file):
+    
     iface = gcap.GCap.get_interfaces()[0]['name']
-    with gcap.GCap(iface=iface, timeout=2000) as cap:
+    with gcap.GCap( iface = iface, timeout = 2000 ) as cap:
         with open('debug_output.txt', 'w') as fd:
 
             if '.' in dest:
@@ -220,7 +222,7 @@ def my_tracert(dest,ttl,max_time,mac,last_delta,to_file):
             while status == 'NONE' and retries>0:
                 if target_time<=time.clock():
                     seq_num += 1
-                    new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap,fd,to_file)
+                    new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,constants.ID,cap,fd,to_file)
                     retries -= 1
                     target_time = time.clock() + max_time
                     if to_file:
@@ -230,15 +232,14 @@ def my_tracert(dest,ttl,max_time,mac,last_delta,to_file):
                 if repack:
                     if to_file:
                         fd.write( 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!' )
-                    status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID,fd, to_file)
+                    status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,constants.ID,fd, to_file)
                     
             time_after = datetime.datetime.now()
             delta = time_after - time_before
             cur_delta =  (delta.total_seconds() * 1000) + (delta.microseconds / 1000)
-            sys.stderr.write(str(cur_delta))
-            running_time = cur_delta - last_delta
+
             if status == 'NONE':
                 status = 'TIMEOUT'
-            return status, hop, running_time
+            return status, hop, cur_delta
 
 # vim: expandtab tabstop=4 shiftwidth=4

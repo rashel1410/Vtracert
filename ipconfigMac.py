@@ -5,6 +5,8 @@
 import addresses
 import subprocess
 
+from common import constants
+
 ## ipconfig/all
 # returns an output of ipconfig/all running
 #
@@ -36,7 +38,7 @@ def src_mac():
                     if key.strip(' .') == 'Physical Address':
                         macs.append(value.strip())
 
-    src_mac = macs[3].split('-')
+    src_mac = macs[ constants.DEFAULT_IFACE_PLACE ].split('-')
     out_src = ''
     for part in src_mac:
         out_src += part
@@ -64,12 +66,10 @@ def dst_mac():
     data = proc.stdout.read()
     rows = data.split('\r\n')
     mac = ''
-    start = 24
-    end = 41
     for row in rows:
         if row != '':
             if ip in row:
-                mac = row[start:end]
+                mac = row[constants.START : constants.END]
     src_mac = mac.split('-')
     out_src = ''
     for part in src_mac:

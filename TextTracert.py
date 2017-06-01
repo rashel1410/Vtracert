@@ -49,16 +49,14 @@ def TextTracert(dest,src_mac,debug):
         to_file = True
     else:
         to_file = False
+
     ttl = 1
-    t=5
     hop = ''
-    MAX_HOPS = 30
     status = 'NONE'
-    time_out = 0
-    sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n\n' %(dest, MAX_HOPS))
-    while status != 'REACH' and ttl < MAX_HOPS:
+    sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n\n' %(dest, constants.MAX_HOPS))
+    while status != 'REACH' and ttl < constants.MAX_HOPS:
     
-        status,hop,time_out = my_tracert.my_tracert(dest,ttl,t,src_mac,time_out,to_file)
+        status,hop,out_time = my_tracert.my_tracert(dest,ttl,constants.TIME,src_mac,to_file)
         if status == "TIMEOUT":
             sys.stderr.write('  %s\t' %str(ttl))
             sys.stderr.write('\t*\tRequest timed out.\n')
@@ -72,12 +70,12 @@ def TextTracert(dest,src_mac,debug):
                 index += 2
             ip = ip[:-1]
             sys.stderr.write('  %s\t' %str(ttl))
-            sys.stderr.write('%s\t%s ms\n' %(ip,str(time_out)))
+            sys.stderr.write('%s\t%s ms\n' %(ip, str(out_time)[:-2] ))
         ttl += 1
     if status=='REACH':
         sys.stderr.write('Trace complete. The packet reached the destination!\n')
     else:
-        sys.stderr.write('Tracert timed out - max %s hops\n' %MAX_HOPS)
+        sys.stderr.write('Tracert timed out - max %s hops\n' %constants.MAX_HOPS)
         
         
 ## main

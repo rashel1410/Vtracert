@@ -18,16 +18,6 @@ import xml.etree.ElementTree as et
 from common import constants
 from common import util
 from my_tracert import my_tracert
-TTL = 1
-MAX_HOPS = 30
-RETRIES = 3
-IP_BEG = 32
-MIME_MAPPING = {
-    'xml': 'text/xml',
-    'html': 'text/html',
-    'png': 'image/png',
-    'txt': 'text/plain',
-}
 
 
 ## Parsing
@@ -179,14 +169,12 @@ def main():
                         param = urlparse.parse_qs(parse.query).values()
                         ip_or_dns = param[0][0]
                         ttl = int(param[1][0])
-                        MAX_TIME = 5
-                        MAX_HOPS = 30
-                        RETRIES = 3
-                        IP_BEG = 32
                         hop = ''
                         status = 'NONE'
                         time_out = 0
-                        status, hop, time_out = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac,time_out, to_file)
+                        last_delta = 0
+                        last_delta = time_out
+                        status, hop, time_out = my_tracert(ip_or_dns,ttl,constants.MAX_TIME,args.mac, to_file)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
                         #
@@ -200,8 +188,10 @@ def main():
                             ip += str(int(part,16))+'.'
                             index += 2
                         ip = ip[:-1]
+                        delta = time_out - last_delta
                         sys.stderr.write(ip+'\n\n')
-                        out = create_xml(ip,status,time_out)
+                        sys.stderr.write(str(delta)+'\n\n')
+                        out = create_xml(ip,status,delta)
                         util.send_all(
                             s,
                             (
@@ -213,7 +203,7 @@ def main():
                                     ) % (
                                         constants.HTTP_SIGNATURE,
                                         len(out),
-                                        MIME_MAPPING.get('xml'),
+                                        constants.MIME_MAPPING.get('xml'),
                                     )
                             ).encode('utf-8')
                         )
@@ -233,15 +223,15 @@ def main():
                                         # 'HTTP/1.1'
                                         # size of file
                                         # file type (.py , .html .....)=>
-                                        # => goes to MIME_MAPPING.
+                                        # => goes to constants.MIME_MAPPING.
                                         #
                                         constants.HTTP_SIGNATURE,
                                         os.fstat(f.fileno()).st_size,
-                                        MIME_MAPPING.get(
+                                        constants.MIME_MAPPING.get(
                                             os.path.splitext(
                                                 file_name
                                             )[1].lstrip('.'),
-                                            MIME_MAPPING.get('http'),
+                                            constants.MIME_MAPPING.get('http'),
                                         )
                                     )
                                 ).encode('utf-8')

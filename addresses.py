@@ -5,6 +5,8 @@
 import socket
 import struct
 
+from common import constants
+
 ## my ip address
 # returns my ip address
 #
@@ -15,7 +17,7 @@ def my_ip():
         s.connect(('10.255.255.255', 1))
         IP = s.getsockname()[0]
     except:
-        IP = '127.0.0.1'
+        IP = constants.LOCALHOST
     finally:
         s.close()
     #print IP
