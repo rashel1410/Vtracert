@@ -45,10 +45,11 @@ def TextTracert(dest,src_mac):
     hop = ''
     MAX_HOPS = 30
     status = 'NONE'
-    sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n' %(dest, MAX_HOPS))
+    time_out = 0
+    sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n\n' %(dest, MAX_HOPS))
     while status != 'REACH' and ttl < MAX_HOPS:
     
-        status,hop = my_tracert.my_tracert(dest,ttl,t,src_mac)
+        status,hop,time_out = my_tracert.my_tracert(dest,ttl,t,src_mac)
         if status == "TIMEOUT":
             sys.stderr.write('  '+str(ttl)+'\t')
             sys.stderr.write('\t*\n')
@@ -62,7 +63,7 @@ def TextTracert(dest,src_mac):
                 index += 2
             ip = ip[:-1]
             sys.stderr.write('  '+str(ttl)+'\t')
-            sys.stderr.write(ip+'\n')
+            sys.stderr.write(ip+'\t'+str(time_out)+'\n')
         ttl += 1
     if status=='REACH':
         sys.stderr.write('Trace complete. The packet reached the destination!\n')
@@ -78,4 +79,6 @@ def main():
     
 if __name__ == '__main__':
     main()
-    
+# >>> now2 = datetime.datetime.now()
+# >>> ((now2 - now).total_seconds() * 1000) + ((now2 - now).microseconds / 1000)
+# 307032.0

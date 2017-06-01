@@ -50,6 +50,7 @@ function get_ip(xml){
     result = xmlDoc.getElementsByTagName("result")[0]
     ip_to_map = result.getAttribute("ipAddr")
     state = result.getAttribute("status")
+    time = result.getAttribute("time")
 }
 
 // Sends request to the server with the dest. address and ttl value

@@ -99,10 +99,10 @@ def send_status(s, code, message, extra):
 #@ param ip (string) - ip address
 #@ param stat (string) - HOP / REACH / TIMEOUT
 #
-def create_xml(ip,stat):
+def create_xml(ip,stat, time_out):
 
     root = et.Element('root')
-    status = et.SubElement(root, 'result', ipAddr=ip, status=stat)
+    status = et.SubElement(root, 'result', ipAddr = ip, status = stat, time = time_out)
     print et.tostring(root)
     return et.tostring(root)
     
@@ -179,7 +179,8 @@ def main():
                         hop = ''
                         status = 'NONE'
                         print args.mac
-                        status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac)
+                        time_out = 0
+                        status, hop, time_out = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
                         #
@@ -195,7 +196,7 @@ def main():
                         ip = ip[:-1]
                         sys.stderr.write(ip+'\n\n')
                         print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
-                        out = create_xml(ip,status)
+                        out = create_xml(ip,status,time_out)
                         util.send_all(
                             s,
                             (

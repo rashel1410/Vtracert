@@ -205,6 +205,7 @@ def my_tracert(dest,ttl,max_time,mac):
         retries = 3
         status = 'NONE'
         target_time = 0
+        time_before = time.clock()
         
         """
         while True:
@@ -226,8 +227,9 @@ def my_tracert(dest,ttl,max_time,mac):
             if repack:
                 print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
                 status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
+        running_time = time.clock() - time_before
         if status == 'NONE':
             status = 'TIMEOUT'
-        return status, hop
+        return status, hop, running_time
 
 # vim: expandtab tabstop=4 shiftwidth=4
