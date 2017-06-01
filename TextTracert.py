@@ -24,6 +24,12 @@ def parse_args():
         '--address',
         help='ip address or dns(name of site)',
     )
+    parser.add_argument(
+        '--mac',
+        default='GET_MAC',
+        help='MAC address of your compute, without - separation',
+    )
+    
     args = parser.parse_args()
     return args
     
@@ -32,7 +38,7 @@ def parse_args():
 #
 # Prints to the screen a serial num of the hop and the ip address
 #
-def TextTracert(dest):
+def TextTracert(dest,src_mac):
     
     ttl = 1
     t=5
@@ -42,7 +48,7 @@ def TextTracert(dest):
     sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n' %(dest, MAX_HOPS))
     while status != 'REACH' and ttl < MAX_HOPS:
     
-        status,hop = my_tracert.my_tracert(dest,ttl,t)
+        status,hop = my_tracert.my_tracert(dest,ttl,t,src_mac)
         if status == "TIMEOUT":
             sys.stderr.write('  '+str(ttl)+'\t')
             sys.stderr.write('\t*\n')
@@ -68,7 +74,7 @@ def TextTracert(dest):
 #
 def main():
     args = parse_args()
-    TextTracert(args.address)
+    TextTracert(args.address,args.mac)
     
 if __name__ == '__main__':
     main()

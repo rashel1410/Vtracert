@@ -50,6 +50,11 @@ def parse_args():
         help='Bind port, default: %(default)s',
     )
     parser.add_argument(
+        '--mac',
+        default='GET_MAC',
+        help='MAC address of your computer, without - separation',
+    )
+    parser.add_argument(
         '--base',
         default='.',
         help='Base directory to search fils in, default: %(default)s',
@@ -57,6 +62,7 @@ def parse_args():
     args = parser.parse_args()
     args.base = os.path.normpath(os.path.realpath(args.base))
     return args
+    
 
 ## Send error status
 #@ param s - socket
@@ -107,6 +113,7 @@ def main():
 
     args = parse_args()
     print 'start...'
+    print args
     with contextlib.closing(
         socket.socket(
             family=socket.AF_INET,
@@ -171,9 +178,13 @@ def main():
                         IP_BEG = 32
                         hop = ''
                         status = 'NONE'
-                        status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME)
+                        print args.mac
+                        status,hop = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
+                        #
+                        # hex ip to regular ip
+                        #
                         ip = ''
                         index = 0
                         part = ''

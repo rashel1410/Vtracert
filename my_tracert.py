@@ -181,7 +181,7 @@ def send_my_packet(new_pack,cap):
 # trys 3 times, if no related reply - echo reply/exceeded reply sends status TIMEOUT
 # else - when recognizes echo reply packet - REACH/ exceeded reply - HOP
 #
-def my_tracert(dest,ttl,max_time):
+def my_tracert(dest,ttl,max_time,mac):
     ID = '1234'
     iface = gcap.GCap.get_interfaces()[0]['name']
     with gcap.GCap(iface=iface, timeout=2000) as cap:
@@ -195,7 +195,12 @@ def my_tracert(dest,ttl,max_time):
         seq_num = random.randint(0,100)
         ip_src = addresses.my_ip()
         mac_dst = ipconfigMac.dst_mac()
-        mac_src = ipconfigMac.src_mac()
+        if mac == 'GET_MAC':
+            mac_src = ipconfigMac.src_mac()
+        else:
+            mac_src = mac
+        print mac_src
+        print type(mac_src)
         rand = random.randint(0,100)
         retries = 3
         status = 'NONE'
