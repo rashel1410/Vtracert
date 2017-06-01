@@ -94,7 +94,6 @@ function request_coordinates() {
     xml.onreadystatechange = function (){
             if(xml.readyState === XMLHttpRequest.DONE && xml.status === 200) {
                 myFunction(this);
-                
             }
         };
     xml.send();
@@ -118,13 +117,14 @@ function myFunction(xml) {
             lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
             lon = xmlDoc.getElementsByTagName("lon")[0].childNodes[0].nodeValue;
             draw_line(lat,lon,mymap);
-    }
+	}
     if (state == 'REACH'){
-        alert('The Packet reached the destination successfully!');
-    }
-    else{
-        send_ip();
-    }
+		alert('The Packet reached the destination successfully!');
+	}
+	else{
+		send_ip();
+	}
+
 
 }
 </script>
