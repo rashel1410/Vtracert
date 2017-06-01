@@ -29,6 +29,11 @@ def parse_args():
         default='GET_MAC',
         help='MAC address of your compute, without - separation',
     )
+    parser.add_argument(
+        '--debug',
+        default='DONT',
+        help='--debug D, if you want to see the debug prints in a file in VTracert',
+    )
     
     args = parser.parse_args()
     return args
@@ -38,8 +43,12 @@ def parse_args():
 #
 # Prints to the screen a serial num of the hop and the ip address
 #
-def TextTracert(dest,src_mac):
+def TextTracert(dest,src_mac,debug):
     
+    if debug == 'D':
+        to_file = True
+    else:
+        to_file = False
     ttl = 1
     t=5
     hop = ''
@@ -49,10 +58,10 @@ def TextTracert(dest,src_mac):
     sys.stderr.write('\n  Tracing route to %s \n  over a maximum of %s hops:\n\n' %(dest, MAX_HOPS))
     while status != 'REACH' and ttl < MAX_HOPS:
     
-        status,hop,time_out = my_tracert.my_tracert(dest,ttl,t,src_mac)
+        status,hop,time_out = my_tracert.my_tracert(dest,ttl,t,src_mac,time_out,to_file)
         if status == "TIMEOUT":
-            sys.stderr.write('  '+str(ttl)+'\t')
-            sys.stderr.write('\t*\n')
+            sys.stderr.write('  %s\t' %str(ttl))
+            sys.stderr.write('\t*\tRequest timed out.\n')
         else:
             ip = ''
             index = 0
@@ -62,8 +71,8 @@ def TextTracert(dest,src_mac):
                 ip += str(int(part,16))+'.'
                 index += 2
             ip = ip[:-1]
-            sys.stderr.write('  '+str(ttl)+'\t')
-            sys.stderr.write(ip+'\t'+str(time_out)+'\n')
+            sys.stderr.write('  %s\t' %str(ttl))
+            sys.stderr.write('%s\t%s ms\n' %(ip,str(time_out)))
         ttl += 1
     if status=='REACH':
         sys.stderr.write('Trace complete. The packet reached the destination!\n')
@@ -75,10 +84,7 @@ def TextTracert(dest,src_mac):
 #
 def main():
     args = parse_args()
-    TextTracert(args.address,args.mac)
+    TextTracert(args.address,args.mac,args.debug)
     
 if __name__ == '__main__':
     main()
-# >>> now2 = datetime.datetime.now()
-# >>> ((now2 - now).total_seconds() * 1000) + ((now2 - now).microseconds / 1000)
-# 307032.0

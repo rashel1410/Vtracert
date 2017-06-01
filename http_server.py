@@ -55,6 +55,11 @@ def parse_args():
         help='MAC address of your computer, without - separation',
     )
     parser.add_argument(
+        '--debug',
+        default='DONT',
+        help='--debug D, if you want to see the debug prints in a file in VTracert',
+    )
+    parser.add_argument(
         '--base',
         default='.',
         help='Base directory to search fils in, default: %(default)s',
@@ -102,8 +107,7 @@ def send_status(s, code, message, extra):
 def create_xml(ip,stat, time_out):
 
     root = et.Element('root')
-    status = et.SubElement(root, 'result', ipAddr = ip, status = stat, time = time_out)
-    print et.tostring(root)
+    cont = et.SubElement(root, 'result', ipAddr = ip, status = stat, time = str(time_out))
     return et.tostring(root)
     
 
@@ -112,8 +116,13 @@ def create_xml(ip,stat, time_out):
 def main():
 
     args = parse_args()
-    print 'start...'
-    print args
+    sys.stderr.write( 'start...' )
+    
+    if args.debug == 'D':
+        to_file = True
+    else:
+        to_file = False
+
     with contextlib.closing(
         socket.socket(
             family=socket.AF_INET,
@@ -142,7 +151,6 @@ def main():
                             raise RuntimeError('Not HTTP protocol')
                         if len(req_comps) != 3:
                             raise RuntimeError('Incomplete HTTP protocol')
-                        print(req_comps)
 
                         method, uri, signature = req_comps
                         if method != 'GET':
@@ -168,7 +176,6 @@ def main():
 
                     if uri[:7] == '/trace?':
                         parse = urlparse.urlparse(uri)
-                        print(parse)
                         param = urlparse.parse_qs(parse.query).values()
                         ip_or_dns = param[0][0]
                         ttl = int(param[1][0])
@@ -178,9 +185,8 @@ def main():
                         IP_BEG = 32
                         hop = ''
                         status = 'NONE'
-                        print args.mac
                         time_out = 0
-                        status, hop, time_out = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac)
+                        status, hop, time_out = my_tracert(ip_or_dns,ttl,MAX_TIME,args.mac,time_out, to_file)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
                         #
@@ -195,7 +201,6 @@ def main():
                             index += 2
                         ip = ip[:-1]
                         sys.stderr.write(ip+'\n\n')
-                        print 'HOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOPHOP'
                         out = create_xml(ip,status,time_out)
                         util.send_all(
                             s,

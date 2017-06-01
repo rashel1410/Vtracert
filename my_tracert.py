@@ -10,6 +10,7 @@ import re
 import reply
 import sys
 import time
+import datetime
 
 from checksum import calc_checksum
 
@@ -49,7 +50,7 @@ def binary_list(s):
 # The function constructs an icmp request packet
 # that contains the arguments it got
 #
-def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
+def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap,fd,to_file):
 
     DATA_LEN = 64
     hops = []
@@ -60,9 +61,9 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
         while zeros != 0:
             content += '0'
             zeros -= 1
-    
-    print 'SEQ: '+str(seq_num)
-    print ip_dst
+    if to_file:
+        fd.write( 'SEQ: '+str(seq_num) )
+        fd.write( ip_dst )
     packet = {
               'dst': mac_dst,
               'src': mac_src,
@@ -157,7 +158,8 @@ def construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,id,cap):
     for item in done_pack:
         new_pack += item
     send_my_packet(new_pack,cap)
-    print new_pack
+    if to_file:
+        fd.write( new_pack )
     return new_pack
     
 ## Send request packet
@@ -181,55 +183,62 @@ def send_my_packet(new_pack,cap):
 # trys 3 times, if no related reply - echo reply/exceeded reply sends status TIMEOUT
 # else - when recognizes echo reply packet - REACH/ exceeded reply - HOP
 #
-def my_tracert(dest,ttl,max_time,mac):
+def my_tracert(dest,ttl,max_time,mac,last_delta,to_file):
     ID = '1234'
     iface = gcap.GCap.get_interfaces()[0]['name']
     with gcap.GCap(iface=iface, timeout=2000) as cap:
-    
+        with open('debug_output.txt', 'w') as fd:
 
-        if '.' in dest:
-            ip_dst = addresses.address_ip(dest)
-        else:
-            ip_dst = dest
-        
-        seq_num = random.randint(0,100)
-        ip_src = addresses.my_ip()
-        mac_dst = ipconfigMac.dst_mac()
-        if mac == 'GET_MAC':
-            mac_src = ipconfigMac.src_mac()
-        else:
-            mac_src = mac
-        print mac_src
-        print type(mac_src)
-        rand = random.randint(0,100)
-        retries = 3
-        status = 'NONE'
-        target_time = 0
-        time_before = time.clock()
-        
-        """
-        while True:
-            repack = cap.next_packet()
-            if repack:
-                print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
-        """
-        hop = ''
-        while status == 'NONE' and retries>0:
-            if target_time<=time.clock():
-                seq_num += 1
-                new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap)
-                retries -= 1
-                #sys.stderr.write(str(retries)+'\n')
-                target_time = time.clock() + max_time
-                print 'TIME: '+str(time.clock())
+            if '.' in dest:
+                ip_dst = addresses.address_ip(dest)
+            else:
+                ip_dst = dest
+            
+            seq_num = random.randint(0,100)
+            ip_src = addresses.my_ip()
+            mac_dst = ipconfigMac.dst_mac()
+            if mac == 'GET_MAC':
+                mac_src = ipconfigMac.src_mac()
+            else:
+                mac_src = mac
+            if to_file:
+                fd.write( mac_src )
+                
+            rand = random.randint(0,100)
+            retries = 3
+            status = 'NONE'
+            target_time = 0
+            time_before = datetime.datetime.now()
+            
+            """
+            while True:
+                repack = cap.next_packet()
+                if repack:
+                    fd.write( 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
+            """
+            hop = ''
+            while status == 'NONE' and retries>0:
+                if target_time<=time.clock():
+                    seq_num += 1
+                    new_pack = construct_packet(ip_dst,ip_src, mac_dst, mac_src,ttl,seq_num,ID,cap,fd,to_file)
+                    retries -= 1
+                    target_time = time.clock() + max_time
+                    if to_file:
+                        fd.write( 'TIME: '+str(time.clock()) )
 
-            repack = cap.next_packet()
-            if repack:
-                print 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!'
-                status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID)
-        running_time = time.clock() - time_before
-        if status == 'NONE':
-            status = 'TIMEOUT'
-        return status, hop, running_time
+                repack = cap.next_packet()
+                if repack:
+                    if to_file:
+                        fd.write( 'WE HAVE A PACKET!!!!!!!!!!!!!!!!!!!!' )
+                    status,hop = reply.process_packet(repack, mac_src, ip_src, seq_num,ID,fd, to_file)
+                    
+            time_after = datetime.datetime.now()
+            delta = time_after - time_before
+            cur_delta =  (delta.total_seconds() * 1000) + (delta.microseconds / 1000)
+            sys.stderr.write(str(cur_delta))
+            running_time = cur_delta - last_delta
+            if status == 'NONE':
+                status = 'TIMEOUT'
+            return status, hop, running_time
 
 # vim: expandtab tabstop=4 shiftwidth=4

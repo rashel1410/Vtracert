@@ -40,7 +40,6 @@ def src_mac():
     out_src = ''
     for part in src_mac:
         out_src += part
-    print src_mac
     return out_src
 
 ## Destination mac

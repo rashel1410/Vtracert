@@ -5,7 +5,6 @@
 import addresses
 import gcap
 import ipconfigMac
-import sys
 
 
 ## Converts binary to hexstring
@@ -24,7 +23,7 @@ def binary_to_hexstring(h, sep=''):
 # The function checks all the addresses and returns true
 # if the packet is exceeded_reply or echo reply
 #
-def correct_addresses(packet, my_ip, my_mac):
+def correct_addresses(packet, my_ip, my_mac, fd, to_file):
     
     TTL_EXCEEDED = '0b'
     ECHO_REPLY = '00'
@@ -34,19 +33,19 @@ def correct_addresses(packet, my_ip, my_mac):
     mac_dst = ('%s' % binary_to_hexstring(
         packet['data'][0:6],
     ))
-    #print 'Mac_dst: '+mac_dst
+    #fd.write( 'Mac_dst: '+mac_dst
     # Ethernet type 
         
     eth_type = ('%s' % binary_to_hexstring(
         packet['data'][12:14],
     ))
-    #print 'eth_type: '+eth_type
+    #fd.write( 'eth_type: '+eth_type
     
     # ip protocol 
     ip_protocol = ('%s' % binary_to_hexstring(
         packet['data'][23:24],
     ))
-    #print 'ip protocol: '+ip_protocol
+    #fd.write( 'ip protocol: '+ip_protocol
     
     # ip destination
     ip_dst = ('%s' % binary_to_hexstring(
@@ -62,23 +61,25 @@ def correct_addresses(packet, my_ip, my_mac):
     data = ('%s' % binary_to_hexstring(
         packet['data'][68:100],
     ))
-    #print data
+    #fd.write( data
     if icmp_type != '08':
-        print "REPLY"
-    
-    print "my mac:"+my_mac
-    print "mac_dst:"+mac_dst
+        if to_file:
+            fd.write( "REPLY" )
+        
+    if to_file:
+        fd.write( "my mac:"+my_mac )
+        fd.write( "mac_dst:"+mac_dst )
+        
     if (my_mac.upper() == mac_dst.upper())and(eth_type == ETH_TYPE):
-    
-        """print 'Mac_dst: '+mac_dst
-        print 'eth_type: '+eth_type
-        print 'ip protocol: '+ip_protocol
-        print 'ip_dst: '+ip_dst
-        print 'icmp_type: '+icmp_type
-        print 'my_ip == ip_dst: '
-        print my_ip == ip_dst and ip_protocol==ICMP
-        print 'MY IP: '+'.'+my_ip+'.'
-        print 'ID DST: '+'.'+ip_dst+'.'"""
+        if to_file:
+            fd.write( 'Mac_dst: '+mac_dst)
+            fd.write( 'eth_type: '+eth_type)
+            fd.write( 'ip protocol: '+ip_protocol)
+            fd.write( 'ip_dst: '+ip_dst)
+            fd.write( 'icmp_type: '+icmp_type)
+            fd.write( 'my_ip == ip_dst: ')
+            fd.write( 'MY IP: '+'.'+my_ip+'.')
+            fd.write( 'ID DST: '+'.'+ip_dst+'.' )
         
         if (my_ip == ip_dst)and(ip_protocol==ICMP):
             if icmp_type in (TTL_EXCEEDED, ECHO_REPLY):
@@ -93,15 +94,16 @@ def correct_addresses(packet, my_ip, my_mac):
 #
 # The function returns true if the packet is exceeded - type '0b' (11)
 #
-def exceeded_reply(packet, my_ip, my_mac):
+def exceeded_reply(packet, my_ip, my_mac, fd, to_file):
 
     # type 
     type = ('%s' % binary_to_hexstring(
         packet['data'][34:35],
     ))
-    print type
+    if to_file:
+        fd.write( type )
 
-    for_me = correct_addresses(packet, my_ip, my_mac)
+    for_me = correct_addresses(packet, my_ip, my_mac, fd, to_file)
     if for_me:
         if type == '0b':
             return True
@@ -115,15 +117,16 @@ def exceeded_reply(packet, my_ip, my_mac):
 #
 # The function returns true if the packet is echo reply - type '00'
 #
-def correct_reply(packet, my_ip, my_mac):#, content):
+def correct_reply(packet, my_ip, my_mac, fd, to_file):
 
     # type 
     type = ('%s' % binary_to_hexstring(
         packet['data'][34:35],
     ))
-    print type
+    if to_file:
+        fd.write( type )
 
-    for_me = correct_addresses(packet, my_ip, my_mac)
+    for_me = correct_addresses(packet, my_ip, my_mac, fd, to_file)
     if for_me:
         if type == '00':
             return True
@@ -141,22 +144,24 @@ def correct_reply(packet, my_ip, my_mac):#, content):
 # if echo reply - REACH - ip address
 # if none of the above - NONE - ip address = ''
 #
-def process_packet(packet, my_mac, my_ip, req_seq_num,ID):
+def process_packet(packet, my_mac, my_ip, req_seq_num,ID,fd, to_file):
 
     hop = ''
     status = 'NONE'
     if packet:
-        if correct_reply(packet,my_ip,my_mac):
+        if correct_reply(packet,my_ip,my_mac, fd, to_file):
             identifier = ('%s' % binary_to_hexstring(
                 packet['data'][38:40],
             ))
-            print 'identifier: '+identifier
+            if to_file:
+                fd.write( 'identifier: '+identifier )
 
             seq = ('%s' % binary_to_hexstring(
                 packet['data'][40:42],
             ))
-            print 'seq: '+seq
-            print 'Req_seq: '+'%04x' %req_seq_num
+            if to_file:
+                fd.write( 'seq: '+seq )
+                fd.write( 'Req_seq: '+'%04x' %req_seq_num )
             
             if identifier == ID and seq == '%04x' %req_seq_num:
                 status = 'REACH'
@@ -165,24 +170,28 @@ def process_packet(packet, my_mac, my_ip, req_seq_num,ID):
                 ))
             
             
-        elif exceeded_reply(packet,my_ip,my_mac):
+        elif exceeded_reply(packet,my_ip,my_mac, fd, to_file):
             identifier = ('%s' % binary_to_hexstring(
                 packet['data'][66:68],
             ))
-            print 'identifier: '+identifier
+            if to_file:
+                fd.write( 'identifier: '+identifier )
 
             seq = ('%s' % binary_to_hexstring(
                 packet['data'][68:70],
             ))
-            print 'seq: '+seq
-            print 'Req_seq: '+'%04x' %req_seq_num
+            if to_file:
+                fd.write( 'seq: '+seq )
+                fd.write( 'Req_seq: '+'%04x' %req_seq_num )
             
             if identifier == ID and seq == '%04x' %req_seq_num:
                 status = 'HOP'
                 hop = ('%s' % binary_to_hexstring(
                     packet['data'][26:30],
                 ))
-    print status,hop
+    if to_file:
+        fd.write( status )
+        fd.write( hop )
     return status,hop
 
 
