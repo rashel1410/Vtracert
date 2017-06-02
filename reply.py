@@ -30,19 +30,17 @@ def correct_addresses(packet, my_ip, my_mac, fd, to_file):
     mac_dst = ('%s' % binary_to_hexstring(
         packet['data'][0:6],
     ))
-    #fd.write( 'Mac_dst: '+mac_dst
+
     # Ethernet type 
         
     eth_type = ('%s' % binary_to_hexstring(
         packet['data'][12:14],
     ))
-    #fd.write( 'eth_type: '+eth_type
     
     # ip protocol 
     ip_protocol = ('%s' % binary_to_hexstring(
         packet['data'][23:24],
     ))
-    #fd.write( 'ip protocol: '+ip_protocol
     
     # ip destination
     ip_dst = ('%s' % binary_to_hexstring(
@@ -58,7 +56,7 @@ def correct_addresses(packet, my_ip, my_mac, fd, to_file):
     data = ('%s' % binary_to_hexstring(
         packet['data'][68:100],
     ))
-    #fd.write( data
+
     if icmp_type != '08':
         if to_file:
             fd.write( "REPLY" )

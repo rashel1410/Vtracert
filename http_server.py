@@ -94,10 +94,12 @@ def send_status(s, code, message, extra):
 #@ param ip (string) - ip address
 #@ param stat (string) - HOP / REACH / TIMEOUT
 #
-def create_xml(ip,stat, time_out):
+def create_xml(ip,stat, delta, run):
 
     root = et.Element('root')
-    cont = et.SubElement(root, 'result', ipAddr = ip, status = stat, time = str(time_out))
+    print delta
+    print run
+    cont = et.SubElement(root, 'result', ipAddr = ip, status = stat, delta_time = str(delta), run_time = str(run))
     return et.tostring(root)
     
 
@@ -105,6 +107,7 @@ def create_xml(ip,stat, time_out):
 #
 def main():
 
+    RUN_TIME = 0
     args = parse_args()
     sys.stderr.write( 'start...' )
     
@@ -171,10 +174,8 @@ def main():
                         ttl = int(param[1][0])
                         hop = ''
                         status = 'NONE'
-                        time_out = 0
-                        last_delta = 0
-                        last_delta = time_out
-                        status, hop, time_out = my_tracert(ip_or_dns,ttl,constants.MAX_TIME,args.mac, to_file)
+                        last_delta = RUN_TIME
+                        status, hop, RUN_TIME = my_tracert(ip_or_dns, ttl, constants.MAX_TIME, args.mac, to_file)
                         sys.stderr.write( "TTL "+str(ttl)+'\n')
                         sys.stderr.write( status+'\n')
                         #
@@ -185,13 +186,15 @@ def main():
                         part = ''
                         for i in range(len(hop)/2):
                             part = hop[index:index+2]
-                            ip += str(int(part,16))+'.'
+                            ip += str(int(part,16)) + '.'
                             index += 2
                         ip = ip[:-1]
-                        delta = time_out - last_delta
+                        delta = RUN_TIME - last_delta
                         sys.stderr.write(ip+'\n\n')
                         sys.stderr.write(str(delta)+'\n\n')
-                        out = create_xml(ip,status,delta)
+                        sys.stderr.write(str(RUN_TIME)+'\n\n')
+                        sys.stderr.write(str(last_delta)+'\n\n')
+                        out = create_xml(ip, status, delta, RUN_TIME)
                         util.send_all(
                             s,
                             (

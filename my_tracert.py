@@ -203,6 +203,8 @@ def my_tracert(dest,ttl,max_time,mac,to_file):
                 mac_src = ipconfigMac.src_mac()
             else:
                 mac_src = mac
+                
+            #sys.stderr.write(mac_dst)
             if to_file:
                 fd.write( mac_src )
                 

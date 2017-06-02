@@ -4,6 +4,7 @@
 
 import addresses
 import subprocess
+import sys
 
 from common import constants
 
@@ -50,7 +51,6 @@ def src_mac():
 # Takes the mac address out of the ipconfig/all output
 #
 def dst_mac():
-
     ips = []
     lines = ipconfig_all()
     for line in lines:
@@ -61,9 +61,11 @@ def dst_mac():
                         key,value = line.split(': ')
                         ips.append(value.strip())
     ip = ips[0]
+    print ip
     args = ["arp", "-a"]
     proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
     data = proc.stdout.read()
+    
     rows = data.split('\r\n')
     mac = ''
     for row in rows:
@@ -74,6 +76,7 @@ def dst_mac():
     out_src = ''
     for part in src_mac:
         out_src += part
+    sys.stderr.write(out_src)
     return out_src
     
 if __name__ == '__main__':
