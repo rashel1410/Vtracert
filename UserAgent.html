@@ -15,6 +15,13 @@ var ip_to_map; // ip address given by tracert program
 var state; // status
 var line_color = 500; // route line initial color
 var ttl = 1; // time to live
+var time; // hop run time
+var polyline;// line object
+
+var green = '2FBC1E'
+var red = 'EC200F'
+var orange = 'EC9F0F'
+var yellow = 'ECD10E'
 
 // Onload function that is called when the web browser first loads
 // Creates a map on the screen
@@ -38,10 +45,21 @@ function draw_line(lat,lon,m){
         cur_lon = lon;
     }
     L.marker([lat, lon]).addTo(m).openPopup();
-    var polyline = L.polyline([[lat,lon], [cur_lat, cur_lon]],{color : ("#" + String(line_color))}).addTo(m);
-    cur_lat = lat;
-    cur_lon = lon;
-    line_color += 60;
+    if (time <= 100.0){
+        line_color = green;
+    }
+    else if( time > 100.0 && time <= 400.0 ){
+        line_color = yellow;
+    }
+    else if( time > 400.0 && time < 1000.0 ){
+        line_color = orange;
+    }
+    else{
+        line_color = red;
+    }
+	polyline = L.polyline([[lat,lon],[cur_lat, cur_lon]],{color : ("#" + line_color)}).addTo(m);
+	cur_lat = lat;
+	cur_lon = lon;
 }
 
 // Reset the arguments of status and address from a given xml
