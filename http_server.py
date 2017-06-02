@@ -122,8 +122,6 @@ def main():
             type=socket.SOCK_STREAM,
         )
     ) as sl:
-        print ("%s %s" %(args.bind_address, args.bind_port))
-
         sl.bind((args.bind_address, args.bind_port))
         sl.listen(10)
         while True:

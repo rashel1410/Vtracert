@@ -7,7 +7,6 @@
 </style> -->
 <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
 <script>
-
 var mymap; // the map object
 var cur_lon=null; // current latitude
 var cur_lat=null; // current longtitude
@@ -15,28 +14,20 @@ var ip_to_map; // ip address given by tracert program
 var state; // status
 var line_color; // route line color
 var ttl = 1; // time to live
-<<<<<<< HEAD
 var run_time; // hop run time
 var delta_time; // time between two hops
 var polyline; // line object
 var to_row = []; // list of params for a new row in table
 var geo_success = ' ';
 // colors
-=======
-var time; // hop run time
-var polyline;// line object
-
->>>>>>> dbed5f177b1a5a7d00459823626441c273c1b36d
 var green = '2FBC1E'
 var red = 'EC200F'
 var orange = 'EC9F0F'
 var yellow = 'ECD10E'
-
 // Onload function that is called when the web browser first loads
 // Creates a map on the screen
 function Onload(){
     mymap = L.map('mapid').setView([51.505, -0.09], 2);
-<<<<<<< HEAD
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -44,17 +35,7 @@ function Onload(){
             'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
-=======
-	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		id: 'mapbox.streets'
-	}).addTo(mymap);
->>>>>>> dbed5f177b1a5a7d00459823626441c273c1b36d
 } 
-
 // Puts a dot on the map and draws a line connecting it with the last dot
 function draw_line(lat,lon,m){
     if (cur_lat == null){
@@ -64,7 +45,6 @@ function draw_line(lat,lon,m){
         cur_lon = lon;
     }
     L.marker([lat, lon]).addTo(m).openPopup();
-<<<<<<< HEAD
     if (delta_time <= 1000.0){
         line_color = green;
     }
@@ -72,37 +52,20 @@ function draw_line(lat,lon,m){
         line_color = yellow;
     }
     else if( delta_time > 4000.0 && delta_time < 5000.0 ){
-=======
-    if (time <= 1000.0){
-        line_color = green;
-    }
-    else if( time > 1000.0 && time <= 4000.0 ){
-        line_color = yellow;
-    }
-    else if( time > 4000.0 && time < 5000.0 ){
->>>>>>> dbed5f177b1a5a7d00459823626441c273c1b36d
         line_color = orange;
     }
     else{
         line_color = red;
     }
-<<<<<<< HEAD
         //var marker = L.marker([43.64701, -79.39425], {icon: firefoxIcon}).addTo(map);
         //var marker = L.marker([-41.29042, 174.78219],{icon: {number: '1'}}).addTo(map);
       //  var marker = L.marker([-41.29042, 174.78219], {
     //icon:    L.NumberedDivIcon({number: '1'})
-
         
     polyline = L.polyline([[lat,lon], [cur_lat, cur_lon]],{color : ("#" +line_color)}).addTo(m);
     cur_lat = lat;
     cur_lon = lon;
-=======
-	polyline = L.polyline([[lat,lon],[cur_lat, cur_lon]],{color : ("#" + line_color)}).addTo(m);
-	cur_lat = lat;
-	cur_lon = lon;
->>>>>>> dbed5f177b1a5a7d00459823626441c273c1b36d
 }
-
 // Reset the arguments of status and address from a given xml
 function get_ip(xml){
     var xmlDoc = xml.responseXML;
@@ -112,7 +75,6 @@ function get_ip(xml){
     delta_time = result.getAttribute("delta_time");
     run_time = result.getAttribute("run_time");
 }
-
 // Sends request to the server with the dest. address and ttl value
 // calls the function request_coordinates
 function send_ip(){
@@ -128,7 +90,6 @@ function send_ip(){
     xml.open(method,url+params, true);
     xml.onreadystatechange = function () {
             if(xml.readyState == XMLHttpRequest.DONE){
-<<<<<<< HEAD
                 if (xml.status == 200) {
                     get_ip(xml);
                     if (state == 'TIMEOUT'){
@@ -145,23 +106,6 @@ function send_ip(){
                 }
             }
        };
-=======
-				if (xml.status == 200) {
-					get_ip(xml);
-					if (state == 'TIMEOUT'){
-						send_ip();
-					}
-					else{
-						request_coordinates();
-					}
-				}
-			}
-			else if (xml.status != 200){
-				send_ip()
-			}
-        };
-    
->>>>>>> dbed5f177b1a5a7d00459823626441c273c1b36d
     ttl++;
     xml.send();
     return false;
@@ -188,7 +132,6 @@ function createCell(cell,text,style) {
     div.setAttribute('geo', style);          // set DIV geo attribute
     cell.appendChild(div);                   // append DIV to the table cell
 }
-
 // Sends request to geo ip service 
 // gets back xml respond
 function request_coordinates() {
@@ -207,7 +150,6 @@ function request_coordinates() {
     xml.send();
     return false;
 }
-
 // true if status of geo ip respond is success
 function isSuccess(xml){
     var xmlDoc = xml.responseXML;
@@ -217,7 +159,6 @@ function isSuccess(xml){
     }
     return false;
 }
-
 // gets the location out of the given xml response, if status is not REACH, keep tracing.
 function myFunction(xml) {
     var xmlDoc = xml.responseXML;
@@ -245,7 +186,6 @@ function myFunction(xml) {
     else{
         send_ip();
     }
-
 }
 </script>
 </link>
@@ -261,18 +201,14 @@ table {
     width: 35%;
     margin-top:0;
 }
-
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
 }
-
 tr:nth-child(even) {
     background-color: #dddddd;
 }
-
-
 </style>
 </head>
 <body>
