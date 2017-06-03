@@ -18,11 +18,21 @@ Textual Tracert:
 
 > cd [location of TextTracert.py file]
 > TextTracert.py --address [args]
+parameters:
+--mac [dst mac]
+--debug D   (if you want debug prints in a file)
+--help
 
 Visual Tracert:
 
 > cd [location of http_server.py file]
 > http_server.py
+parameters:
+--bind-address [bind address]
+--bind-port [bind-port]
+--mac [dst mac]
+--debug D   (if you want debug prints in a file)
+--help
 
 Open a web server and use the line:
 http://localhost:8080/UserAgent.html
