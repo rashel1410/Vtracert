@@ -3,12 +3,12 @@
 ## @file TextTracert.py The textual tracert program
 
 import argparse
+import my_tracert
 import os
 import random
+import sys
 import traceback
 import urlparse
-import my_tracert
-import sys
 
 from common import constants
 from common import util

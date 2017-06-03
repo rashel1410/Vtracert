@@ -3,6 +3,7 @@
 ## @file my_tracert.py Traces to a given destination
 import addresses
 import base64
+import datetime
 import gcap
 import ipconfigMac
 import random
@@ -10,7 +11,6 @@ import re
 import reply
 import sys
 import time
-import datetime
 
 from common import constants
 from checksum import calc_checksum
@@ -18,6 +18,7 @@ from checksum import calc_checksum
 ## Converts a hexstring to binary bytearray
 #@ param h (string)
 #@ param sep (string)
+#
 # returns a bytearray
 #
 def hexstring_to_binary(h, sep=''):

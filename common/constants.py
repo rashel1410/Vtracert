@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """ Constants """
 ## @file constants.py
 
