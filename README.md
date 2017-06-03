@@ -7,7 +7,7 @@ The original traceroute program was written by Van Jacobson in 1987.
 The project produces the user 2 services:
  - Textual Tracert
        The user gets textual output in the cmd - 
-       serial number , ip address (hop)
+       serial number , ip address (hop), time to reach hop
 
  - Visual Tracert
        The user enters an ip address or a name of site (dns) and sees the route on a beautiful map.
