@@ -40,6 +40,8 @@ def parse_args():
     
 ## Textual tracert
 #@ param dest (string) - address to trace
+#@ param src_mac (string)
+#@ param debug (string) - 'D' if user wants a debug file, 'DONT' if not
 #
 # Prints to the screen a serial num of the hop and the ip address
 #

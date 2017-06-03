@@ -46,6 +46,8 @@ def binary_list(s):
 #@ param seq_num (int) - initially a random number that increases with every new packet
 #@ param id (int) - identification number
 #@ param cap (gcap) - gcap object
+#@ param fd (int) - file descriptor to write to
+#@ param to_file (boolean) - true if user asked to write into debug file
 # returns a (string) packet
 #
 # The function constructs an icmp request packet
@@ -179,7 +181,10 @@ def send_my_packet(new_pack,cap):
 #@ param dest (string) - destination ip or dns address
 #@ param ttl (int) - time to live value
 #@ param max_time (int) - seconds till timeout
-# returns hop (string-address) and status(string-HOP/REACH/TIMEOUT)
+#@ param mac (string) - dst mac address
+#@ param to_file (boolean) - true if user asked to write into debug file
+# returns hop (string-address), status(string-HOP/REACH/TIMEOUT)
+# and cur_delta(int) - time of tracing current hop
 #
 # Sends an icmp echo request packet to the given destination
 # trys 3 times, if no related reply - echo reply/exceeded reply sends status TIMEOUT
@@ -204,7 +209,6 @@ def my_tracert(dest,ttl,max_time,mac,to_file):
             else:
                 mac_src = mac
                 
-            #sys.stderr.write(mac_dst)
             if to_file:
                 fd.write( mac_src )
                 
@@ -238,10 +242,11 @@ def my_tracert(dest,ttl,max_time,mac,to_file):
                     
             time_after = datetime.datetime.now()
             delta = time_after - time_before
+            
             cur_delta =  (delta.total_seconds() * 1000) + (delta.microseconds / 1000)
 
             if status == 'NONE':
                 status = 'TIMEOUT'
-            return status, hop, cur_delta
+            return status, hop, int(cur_delta)
 
 # vim: expandtab tabstop=4 shiftwidth=4

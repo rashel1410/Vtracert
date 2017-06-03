@@ -65,7 +65,6 @@ def dst_mac():
     args = ["arp", "-a"]
     proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
     data = proc.stdout.read()
-    
     rows = data.split('\r\n')
     mac = ''
     for row in rows:

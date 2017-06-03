@@ -18,12 +18,14 @@ var run_time; // hop run time
 var delta_time; // time between two hops
 var polyline; // line object
 var to_row = []; // list of params for a new row in table
-var geo_success = ' ';
+var geo_success = ' '; // geo text. info
 // colors
 var green = '2FBC1E'
 var red = 'EC200F'
 var orange = 'EC9F0F'
 var yellow = 'ECD10E'
+
+
 // Onload function that is called when the web browser first loads
 // Creates a map on the screen
 function Onload(){
@@ -35,7 +37,8 @@ function Onload(){
             'Imagery © <a href="http://mapbox.com">Mapbox</a>',
         id: 'mapbox.streets'
     }).addTo(mymap);
-} 
+}
+
 // Puts a dot on the map and draws a line connecting it with the last dot
 function draw_line(lat,lon,m){
     if (cur_lat == null){
@@ -57,11 +60,6 @@ function draw_line(lat,lon,m){
     else{
         line_color = red;
     }
-        //var marker = L.marker([43.64701, -79.39425], {icon: firefoxIcon}).addTo(map);
-        //var marker = L.marker([-41.29042, 174.78219],{icon: {number: '1'}}).addTo(map);
-      //  var marker = L.marker([-41.29042, 174.78219], {
-    //icon:    L.NumberedDivIcon({number: '1'})
-        
     polyline = L.polyline([[lat,lon], [cur_lat, cur_lon]],{color : ("#" +line_color)}).addTo(m);
     cur_lat = lat;
     cur_lon = lon;
@@ -100,8 +98,6 @@ function send_ip(){
                     }
                     else{
                         request_coordinates();
-                        to_row = [ttl-1, ip_to_map, run_time, geo_success];
-                        appendRow(to_row);
                     }
                 }
             }
@@ -110,6 +106,7 @@ function send_ip(){
     xml.send();
     return false;
 }
+
 // append row to the HTML table
 function appendRow(arr) {
     var tbl = document.getElementById('my table'), // table reference
@@ -132,6 +129,7 @@ function createCell(cell,text,style) {
     div.setAttribute('geo', style);          // set DIV geo attribute
     cell.appendChild(div);                   // append DIV to the table cell
 }
+
 // Sends request to geo ip service 
 // gets back xml respond
 function request_coordinates() {
@@ -145,11 +143,18 @@ function request_coordinates() {
                 if (xml.status == 200) {
                     myFunction(this);
                 }
+                else{
+                    //geo_success = 'no packet with geo info';
+                    //to_row = [ttl-1, ip_to_map, run_time + ' ms', geo_success];
+                    //appendRow(to_row);
+                    send_ip();
+                }
             }
         };
     xml.send();
     return false;
 }
+
 // true if status of geo ip respond is success
 function isSuccess(xml){
     var xmlDoc = xml.responseXML;
@@ -159,11 +164,10 @@ function isSuccess(xml){
     }
     return false;
 }
+
 // gets the location out of the given xml response, if status is not REACH, keep tracing.
 function myFunction(xml) {
     var xmlDoc = xml.responseXML;
-    //var q = xmlDoc.getElementsByTagName("query")[0].childNodes[0].nodeValue;
-    //alert(q);
     if ((xmlDoc != null) && isSuccess(xml)) {
     
             lat = xmlDoc.getElementsByTagName("lat")[0].childNodes[0].nodeValue;
@@ -175,15 +179,19 @@ function myFunction(xml) {
         if (isSuccess(xml)==false){
             var fail_message = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
         }
-        else{
-            var fail_message = 'no packet with geo info';
-        }
+        //else{
+        //    var fail_message = 'no packet with geo info';
+        //}
         geo_success = fail_message + ' :-(';
     }
     if (state == 'REACH'){
         alert('The Packet reached the destination successfully!');
+        to_row = [ttl-1, ip_to_map, run_time + ' ms', geo_success];
+        appendRow(to_row);
     }
     else{
+        to_row = [ttl-1, ip_to_map, run_time + ' ms', geo_success];
+        appendRow(to_row);
         send_ip();
     }
 }

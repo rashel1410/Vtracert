@@ -20,7 +20,8 @@ def binary_to_hexstring(h, sep=''):
 #@ param packet (string)
 #@ param my_ip (string)
 #@ param my_mac (string)
-#
+#@ param fd (int) - file descriptor to write to
+#@ param to_file (boolean) - true if user asked to write into debug file
 # The function checks all the addresses and returns true
 # if the packet is exceeded_reply or echo reply
 #
@@ -86,7 +87,8 @@ def correct_addresses(packet, my_ip, my_mac, fd, to_file):
 #@ param packet (string)
 #@ param my_ip (string)
 #@ param my_mac (string)
-#
+#@ param fd (int) - file descriptor to write to
+#@ param to_file (boolean) - true if user asked to write into debug file#
 # The function returns true if the packet is exceeded - type '0b' (11)
 #
 def exceeded_reply(packet, my_ip, my_mac, fd, to_file):
@@ -108,6 +110,8 @@ def exceeded_reply(packet, my_ip, my_mac, fd, to_file):
 #@ param packet (string)
 #@ param my_ip (string)
 #@ param my_mac (string)
+#@ param fd (int) - file descriptor to write to
+#@ param to_file (boolean) - true if user asked to write into debug file
 # returns true/false
 #
 # The function returns true if the packet is echo reply - type '00'
@@ -133,13 +137,15 @@ def correct_reply(packet, my_ip, my_mac, fd, to_file):
 #@ param my_mac (string)
 #@ req_seq_num (int) - sequence number that increases in each echo request we send
 #@ id (string) - constant field
+#@ param fd (int) - file descriptor to write to
+#@ param to_file (boolean) - true if user asked to write into debug file
 # returns hop (string-address) and status(string-HOP/REACH/NONE)
 #
 # if exceeded reply - HOP - ip address
 # if echo reply - REACH - ip address
 # if none of the above - NONE - ip address = ''
 #
-def process_packet(packet, my_mac, my_ip, req_seq_num,id,fd, to_file):
+def process_packet(packet, my_mac, my_ip, req_seq_num, id, fd, to_file):
 
     hop = ''
     status = 'NONE'

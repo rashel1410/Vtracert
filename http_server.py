@@ -168,6 +168,7 @@ def main():
                     )
 
                     if uri[:7] == '/trace?':
+                        
                         parse = urlparse.urlparse(uri)
                         param = urlparse.parse_qs(parse.query).values()
                         ip_or_dns = param[0][0]
@@ -175,42 +176,43 @@ def main():
                         hop = ''
                         status = 'NONE'
                         last_delta = RUN_TIME
-                        status, hop, RUN_TIME = my_tracert(ip_or_dns, ttl, constants.MAX_TIME, args.mac, to_file)
-                        sys.stderr.write( "TTL "+str(ttl)+'\n')
-                        sys.stderr.write( status+'\n')
-                        #
-                        # hex ip to regular ip
-                        #
-                        ip = ''
-                        index = 0
-                        part = ''
-                        for i in range(len(hop)/2):
-                            part = hop[index:index+2]
-                            ip += str(int(part,16)) + '.'
-                            index += 2
-                        ip = ip[:-1]
-                        delta = RUN_TIME - last_delta
-                        sys.stderr.write(ip+'\n\n')
-                        sys.stderr.write(str(delta)+'\n\n')
-                        sys.stderr.write(str(RUN_TIME)+'\n\n')
-                        sys.stderr.write(str(last_delta)+'\n\n')
-                        out = create_xml(ip, status, delta, RUN_TIME)
-                        util.send_all(
-                            s,
-                            (
-                                    (
-                                        '%s 200 OK\r\n'
-                                        'Content-Length: %s\r\n'
-                                        'Content-Type: %s\r\n'
-                                        '\r\n'
-                                    ) % (
-                                        constants.HTTP_SIGNATURE,
-                                        len(out),
-                                        constants.MIME_MAPPING.get('xml'),
-                                    )
-                            ).encode('utf-8')
-                        )
-                        util.send_all(s, out)
+                        if constants.MAX_HOPS >= ttl:
+                            status, hop, RUN_TIME = my_tracert(ip_or_dns, ttl, constants.MAX_TIME, args.mac, to_file)
+                            sys.stderr.write( "TTL "+str(ttl)+'\n')
+                            sys.stderr.write( status+'\n')
+                            #
+                            # hex ip to regular ip
+                            #
+                            ip = ''
+                            index = 0
+                            part = ''
+                            for i in range(len(hop)/2):
+                                part = hop[index:index+2]
+                                ip += str(int(part,16)) + '.'
+                                index += 2
+                            ip = ip[:-1]
+                            delta = RUN_TIME - last_delta
+                            sys.stderr.write(ip+'\n\n')
+                            sys.stderr.write(str(delta)+'\n\n')
+                            sys.stderr.write(str(RUN_TIME)+'\n\n')
+                            sys.stderr.write(str(last_delta)+'\n\n')
+                            out = create_xml(ip, status, delta, RUN_TIME)
+                            util.send_all(
+                                s,
+                                (
+                                        (
+                                            '%s 200 OK\r\n'
+                                            'Content-Length: %s\r\n'
+                                            'Content-Type: %s\r\n'
+                                            '\r\n'
+                                        ) % (
+                                            constants.HTTP_SIGNATURE,
+                                            len(out),
+                                            constants.MIME_MAPPING.get('xml'),
+                                        )
+                                ).encode('utf-8')
+                            )
+                            util.send_all(s, out)
                     else:
                         with open(file_name, 'rb') as f:
                             util.send_all(
