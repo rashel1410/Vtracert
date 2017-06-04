@@ -61,7 +61,6 @@ def dst_mac():
                         key,value = line.split(': ')
                         ips.append(value.strip())
     ip = ips[0]
-    print ip
     args = ["arp", "-a"]
     proc = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE)
     data = proc.stdout.read()

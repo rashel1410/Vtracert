@@ -92,7 +92,7 @@ function send_ip(){
                     get_ip(xml);
                     if (state == 'TIMEOUT'){
                         geo_success = 'Request timed out';
-                        to_row = [ttl-1, '*', run_time, geo_success];
+                        to_row = [ttl-1, '*', run_time + 'ms', geo_success];
                         appendRow(to_row);
                         send_ip();
                     }

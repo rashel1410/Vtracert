@@ -194,7 +194,7 @@ def send_my_packet(new_pack,cap):
 def my_tracert(dest,ttl,max_time,mac,to_file):
     
     iface = gcap.GCap.get_interfaces()[0]['name']
-    with gcap.GCap( iface = iface, timeout = 2000 ) as cap:
+    with gcap.GCap( iface = iface, timeout = 500 ) as cap:
         with open('debug_output.txt', 'w') as fd:
 
             if '.' in dest:
@@ -214,7 +214,7 @@ def my_tracert(dest,ttl,max_time,mac,to_file):
                 fd.write( mac_src )
                 
             rand = random.randint(0,100)
-            retries = 1
+            retries = 3
             status = 'NONE'
             target_time = 0
             time_before = datetime.datetime.now()

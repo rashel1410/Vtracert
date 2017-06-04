@@ -12,7 +12,7 @@ DEFAULT_HTTP_PORT = 8080
 HTTP_SIGNATURE = 'HTTP/1.1'
 MAX_HEADER_LENGTH = 4096
 MAX_NUMBER_OF_HEADERS = 100
-MAX_TIME = 5
+MAX_TIME = 3
 MIME_MAPPING = {
     'xml': 'text/xml',
     'html': 'text/html',
