@@ -214,7 +214,7 @@ def my_tracert(dest,ttl,max_time,mac,to_file):
                 fd.write( mac_src )
                 
             rand = random.randint(0,100)
-            retries = 3
+            retries = 1
             status = 'NONE'
             target_time = 0
             time_before = datetime.datetime.now()

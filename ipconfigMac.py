@@ -75,7 +75,7 @@ def dst_mac():
     out_src = ''
     for part in src_mac:
         out_src += part
-    sys.stderr.write(out_src)
+    #sys.stderr.write(out_src)
     return out_src
     
 if __name__ == '__main__':

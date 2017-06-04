@@ -193,9 +193,9 @@ def main():
                             ip = ip[:-1]
                             delta = RUN_TIME - last_delta
                             sys.stderr.write(ip+'\n\n')
-                            sys.stderr.write(str(delta)+'\n\n')
-                            sys.stderr.write(str(RUN_TIME)+'\n\n')
-                            sys.stderr.write(str(last_delta)+'\n\n')
+                            #sys.stderr.write(str(delta)+'\n\n')
+                            #sys.stderr.write(str(RUN_TIME)+'\n\n')
+                            #sys.stderr.write(str(last_delta)+'\n\n')
                             out = create_xml(ip, status, delta, RUN_TIME)
                             util.send_all(
                                 s,
